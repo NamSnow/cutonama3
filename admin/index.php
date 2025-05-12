@@ -17,25 +17,39 @@ $page_url = $_SERVER['REQUEST_URI'];
 $stmt_log = $pdo->prepare("INSERT INTO access_logs (ip_address, user_agent, page_url) VALUES (?, ?, ?)");
 $stmt_log->execute([$ip_address, $user_agent, $page_url]);
 
-// Kiểm tra và xử lý tìm kiếm
+// Kiểm tra và xử lý tìm kiếm và lọc
 $searchQuery = isset($_GET['search']) ? $_GET['search'] : '';
+$filterType = isset($_GET['filter']) ? $_GET['filter'] : 'all'; // Default to show all
 
-// Lấy danh sách tin tức từ các bảng khác nhau
-$stmt_news = $pdo->prepare("SELECT 'general' as type, news_id, title, summary, is_published, created_at, image FROM news WHERE title LIKE ? OR summary LIKE ? ORDER BY created_at DESC");
-$stmt_news->execute(['%' . $searchQuery . '%', '%' . $searchQuery . '%']);
-$generalNews = $stmt_news->fetchAll(PDO::FETCH_ASSOC);
+// Lấy danh sách tin tức từ các bảng khác nhau dựa trên bộ lọc
+$generalNews = [];
+$footballNews = [];
+$gameNews = [];
+$celebrityNews = [];
 
-$stmt_football = $pdo->prepare("SELECT 'football' as type, football_news_id as id, title, summary, is_published, created_at, image FROM football_news WHERE title LIKE ? OR summary LIKE ? ORDER BY created_at DESC");
-$stmt_football->execute(['%' . $searchQuery . '%', '%' . $searchQuery . '%']);
-$footballNews = $stmt_football->fetchAll(PDO::FETCH_ASSOC);
+if ($filterType === 'all' || $filterType === 'general') {
+    $stmt_news = $pdo->prepare("SELECT 'general' as type, news_id, title, summary, is_published, created_at, image FROM news WHERE (title LIKE ? OR summary LIKE ?) ORDER BY created_at DESC");
+    $stmt_news->execute(['%' . $searchQuery . '%', '%' . $searchQuery . '%']);
+    $generalNews = $stmt_news->fetchAll(PDO::FETCH_ASSOC);
+}
 
-$stmt_game = $pdo->prepare("SELECT 'game' as type, game_news_id as id, title, summary, is_published, created_at, image FROM game_news WHERE title LIKE ? OR summary LIKE ? ORDER BY created_at DESC");
-$stmt_game->execute(['%' . $searchQuery . '%', '%' . $searchQuery . '%']);
-$gameNews = $stmt_game->fetchAll(PDO::FETCH_ASSOC);
+if ($filterType === 'all' || $filterType === 'football') {
+    $stmt_football = $pdo->prepare("SELECT 'football' as type, football_news_id as id, title, summary, is_published, created_at, image FROM football_news WHERE (title LIKE ? OR summary LIKE ?) ORDER BY created_at DESC");
+    $stmt_football->execute(['%' . $searchQuery . '%', '%' . $searchQuery . '%']);
+    $footballNews = $stmt_football->fetchAll(PDO::FETCH_ASSOC);
+}
 
-$stmt_celebrity = $pdo->prepare("SELECT 'celebrity' as type, celebrity_news_id as id, title, summary, is_published, created_at, image FROM celebrity_news WHERE title LIKE ? OR summary LIKE ? ORDER BY created_at DESC");
-$stmt_celebrity->execute(['%' . $searchQuery . '%', '%' . $searchQuery . '%']);
-$celebrityNews = $stmt_celebrity->fetchAll(PDO::FETCH_ASSOC);
+if ($filterType === 'all' || $filterType === 'game') {
+    $stmt_game = $pdo->prepare("SELECT 'game' as type, game_news_id as id, title, summary, is_published, created_at, image FROM game_news WHERE (title LIKE ? OR summary LIKE ?) ORDER BY created_at DESC");
+    $stmt_game->execute(['%' . $searchQuery . '%', '%' . $searchQuery . '%']);
+    $gameNews = $stmt_game->fetchAll(PDO::FETCH_ASSOC);
+}
+
+if ($filterType === 'all' || $filterType === 'celebrity') {
+    $stmt_celebrity = $pdo->prepare("SELECT 'celebrity' as type, celebrity_news_id as id, title, summary, is_published, created_at, image FROM celebrity_news WHERE (title LIKE ? OR summary LIKE ?) ORDER BY created_at DESC");
+    $stmt_celebrity->execute(['%' . $searchQuery . '%', '%' . $searchQuery . '%']);
+    $celebrityNews = $stmt_celebrity->fetchAll(PDO::FETCH_ASSOC);
+}
 
 // Gộp tất cả các loại tin tức và sắp xếp theo thời gian tạo
 $allNews = array_merge($generalNews, $footballNews, $gameNews, $celebrityNews);
@@ -52,57 +66,71 @@ usort($allNews, function ($a, $b) {
     <title>Admin - News Management</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
 </head>
-<body class="min-h-screen bg-gray-100">
-    <div class="max-w-7xl mx-auto p-4">
-        <h1 class="text-3xl font-semibold text-gray-800 mb-4">Admin Panel - News Management</h1>
+<body class="bg-gray-100 min-h-screen">
+    <div class="container mx-auto py-8 px-4">
+        <h1 class="text-3xl font-semibold text-gray-800 mb-6">Admin Panel - News Management</h1>
 
-        <a href="/cutonama3/admin/logout.php" class="bg-red-500 text-white p-2 rounded mt-4 inline-block hover:bg-red-700">Logout</a>
+        <div class="flex justify-between items-center mb-4">
+            <a href="/cutonama3/admin/logout.php" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Logout</a>
+        </div>
 
-        <form action="" method="GET" class="mb-4 flex items-center mt-4">
-            <input type="text" name="search" value="<?php echo htmlspecialchars($searchQuery); ?>" placeholder="Search all news..." class="p-2 border border-gray-300 rounded flex-grow" />
-            <button type="submit" class="bg-blue-500 text-white p-2 rounded ml-2 hover:bg-blue-700">Search</button>
+        <form action="" method="GET" class="mb-4 flex items-center">
+            <input type="text" name="search" value="<?php echo htmlspecialchars($searchQuery); ?>" placeholder="Search all news..." class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
+            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2 focus:outline-none focus:shadow-outline">Search</button>
         </form>
 
         <h2 class="text-xl font-semibold text-gray-700 mb-2">Manage News</h2>
-        <a href="/cutonama3/admin/create.php" class="bg-green-500 text-white p-2 rounded mt-2 inline-block hover:bg-green-700">Add New General News</a>
-        <a href="/cutonama3/admin/create_football.php" class="bg-green-500 text-white p-2 rounded mt-2 ml-2 inline-block hover:bg-green-700">Add New Football News</a>
-        <a href="/cutonama3/admin/create_game.php" class="bg-green-500 text-white p-2 rounded mt-2 ml-2 inline-block hover:bg-green-700">Add New Game News</a>
-        <a href="/cutonama3/admin/create_celebrity.php" class="bg-green-500 text-white p-2 rounded mt-2 ml-2 inline-block hover:bg-green-700">Add New Celebrity News</a>
+        <div class="mb-4 flex flex-wrap gap-2">
+            <a href="/cutonama3/admin/create.php" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Add General</a>
+            <a href="/cutonama3/admin/create_football.php" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Add Football</a>
+            <a href="/cutonama3/admin/create_game.php" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Add Game</a>
+            <a href="/cutonama3/admin/create_celebrity.php" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Add Celebrity</a>
+        </div>
 
-        <div class="overflow-x-auto mt-6">
-            <table class="min-w-full bg-white border border-gray-300 shadow-sm rounded-md">
+        <div class="mb-4">
+            <select name="filter" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" aria-label="Filter news" onchange="this.form.submit()">
+                <option value="all" <?php if ($filterType === 'all') echo 'selected'; ?>>All News</option>
+                <option value="general" <?php if ($filterType === 'general') echo 'selected'; ?>>General News</option>
+                <option value="football" <?php if ($filterType === 'football') echo 'selected'; ?>>Football News</option>
+                <option value="game" <?php if ($filterType === 'game') echo 'selected'; ?>>Game News</option>
+                <option value="celebrity" <?php if ($filterType === 'celebrity') echo 'selected'; ?>>Celebrity News</option>
+            </select>
+        </div>
+
+        <div class="overflow-x-auto bg-white shadow-md rounded-md">
+            <table class="min-w-full leading-normal">
                 <thead class="bg-gray-50">
                     <tr>
-                        <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Type</th>
-                        <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Title</th>
-                        <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Summary</th>
-                        <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Published</th>
-                        <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Created At</th>
-                        <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Image</th>
-                        <th class="py-2 px-4 border-b text-left text-sm font-semibold text-gray-700">Actions</th>
+                        <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Type</th>
+                        <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Title</th>
+                        <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Summary</th>
+                        <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Published</th>
+                        <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Created At</th>
+                        <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Image</th>
+                        <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($allNews)): ?>
-                        <tr><td colspan="7" class="py-4 px-4 text-center text-gray-500">No news found.</td></tr>
+                        <tr><td colspan="7" class="px-5 py-5 border-b border-gray-200 text-sm text-gray-500 text-center">No news found.</td></tr>
                     <?php else: ?>
                         <?php foreach ($allNews as $news): ?>
                             <tr>
-                                <td class="py-2 px-4 border-b text-sm text-gray-800"><?php echo ucfirst($news['type']); ?></td>
-                                <td class="py-2 px-4 border-b text-sm text-gray-800"><?php echo htmlspecialchars($news['title']); ?></td>
-                                <td class="py-2 px-4 border-b text-sm text-gray-800"><?php echo htmlspecialchars(substr($news['summary'], 0, 100)) . '...'; ?></td>
-                                <td class="py-2 px-4 border-b text-sm text-gray-800">
-                                    <?php echo $news['is_published'] ? '<span class="text-green-500">Published</span>' : '<span class="text-red-500">Unpublished</span>'; ?>
+                                <td class="px-5 py-5 border-b border-gray-200 text-sm"><?php echo ucfirst($news['type']); ?></td>
+                                <td class="px-5 py-5 border-b border-gray-200 text-sm"><?php echo htmlspecialchars($news['title']); ?></td>
+                                <td class="px-5 py-5 border-b border-gray-200 text-sm"><?php echo htmlspecialchars(substr($news['summary'], 0, 100)) . '...'; ?></td>
+                                <td class="px-5 py-5 border-b border-gray-200 text-sm">
+                                    <?php echo $news['is_published'] ? '<span class="inline-block bg-green-200 text-green-800 py-1 px-2 rounded-full text-xs font-semibold">Published</span>' : '<span class="inline-block bg-red-200 text-red-800 py-1 px-2 rounded-full text-xs font-semibold">Unpublished</span>'; ?>
                                 </td>
-                                <td class="py-2 px-4 border-b text-sm text-gray-800"><?php echo $news['created_at']; ?></td>
-                                <td class="py-2 px-4 border-b text-sm text-gray-800">
+                                <td class="px-5 py-5 border-b border-gray-200 text-sm"><?php echo $news['created_at']; ?></td>
+                                <td class="px-5 py-5 border-b border-gray-200 text-sm">
                                     <?php if ($news['image']): ?>
                                         <img src="<?php echo htmlspecialchars($news['image']); ?>" alt="Image" class="w-16 h-16 object-cover rounded">
                                     <?php else: ?>
                                         No image
                                     <?php endif; ?>
                                 </td>
-                                <td class="py-2 px-4 border-b text-sm text-gray-800">
+                                <td class="px-5 py-5 border-b border-gray-200 text-sm">
                                     <?php
                                     $editUrl = '';
                                     $deleteUrl = '';
@@ -130,8 +158,9 @@ usort($allNews, function ($a, $b) {
                                             break;
                                     }
                                     ?>
-                                    <a href="<?php echo $editUrl . $news[$idKey]; ?>" class="text-blue-500 hover:underline">Edit</a> |
-                                    <a href="<?php echo $deleteUrl . $news[$idKey]; ?>" class="text-red-500 hover:underline" onclick="return confirm('Are you sure you want to delete this news?')">Delete</a>
+                                    <a href="<?php echo $editUrl . $news[$idKey]; ?>" class="text-blue-500 hover:text-blue-700">Edit</a>
+                                    <span class="text-gray-300">|</span>
+                                    <a href="<?php echo $deleteUrl . $news[$idKey]; ?>" class="text-red-500 hover:text-red-700" onclick="return confirm('Are you sure you want to delete this news?')">Delete</a>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
