@@ -21,41 +21,70 @@ $stmt_log->execute([$ip_address, $user_agent, $page_url]);
 $searchQuery = isset($_GET['search']) ? $_GET['search'] : '';
 $filterType = isset($_GET['filter']) ? $_GET['filter'] : 'all'; // Default to show all
 
-// Lấy danh sách tin tức từ các bảng khác nhau dựa trên bộ lọc
-$generalNews = [];
-$footballNews = [];
-$gameNews = [];
-$celebrityNews = [];
+// Số lượng tin tức hiển thị trên mỗi trang
+$itemsPerPage = 10;
+$page = isset($_GET['page']) ? intval($_GET['page']) : 1;
+$offset = ($page - 1) * $itemsPerPage;
 
-if ($filterType === 'all' || $filterType === 'general') {
-    $stmt_news = $pdo->prepare("SELECT 'general' as type, news_id, title, summary, is_published, created_at, image FROM news WHERE (title LIKE ? OR summary LIKE ?) ORDER BY created_at DESC");
-    $stmt_news->execute(['%' . $searchQuery . '%', '%' . $searchQuery . '%']);
-    $generalNews = $stmt_news->fetchAll(PDO::FETCH_ASSOC);
+// Hàm để lấy tổng số tin tức dựa trên bộ lọc và tìm kiếm
+function getTotalNews($pdo, $filterType, $searchQuery) {
+    $conditions = [];
+    $params = [];
+    if ($filterType !== 'all') {
+        $conditions[] = "type = ?";
+        $params[] = $filterType;
+    }
+    if (!empty($searchQuery)) {
+        $conditions[] = "(title LIKE ? OR summary LIKE ?)";
+        $params[] = '%' . $searchQuery . '%';
+        $params[] = '%' . $searchQuery . '%';
+    }
+    $whereClause = !empty($conditions) ? 'WHERE ' . implode(' AND ', $conditions) : '';
+
+    $sql = "SELECT COUNT(*) FROM (
+                    SELECT 'general' as type, news_id as id, title, summary FROM news
+                    UNION ALL
+                    SELECT 'football' as type, football_news_id as id, title, summary FROM football_news
+                    UNION ALL
+                    SELECT 'game' as type, game_news_id as id, title, summary FROM game_news
+                    UNION ALL
+                    SELECT 'celebrity' as type, celebrity_news_id as id, title, summary FROM celebrity_news
+                ) AS combined_news {$whereClause}";
+
+    $stmt = $pdo->prepare($sql);
+    $stmt->execute($params);
+    return $stmt->fetchColumn();
 }
 
-if ($filterType === 'all' || $filterType === 'football') {
-    $stmt_football = $pdo->prepare("SELECT 'football' as type, football_news_id as id, title, summary, is_published, created_at, image FROM football_news WHERE (title LIKE ? OR summary LIKE ?) ORDER BY created_at DESC");
-    $stmt_football->execute(['%' . $searchQuery . '%', '%' . $searchQuery . '%']);
-    $footballNews = $stmt_football->fetchAll(PDO::FETCH_ASSOC);
-}
+$totalNews = getTotalNews($pdo, $filterType, $searchQuery);
+$totalPages = ceil($totalNews / $itemsPerPage);
 
-if ($filterType === 'all' || $filterType === 'game') {
-    $stmt_game = $pdo->prepare("SELECT 'game' as type, game_news_id as id, title, summary, is_published, created_at, image FROM game_news WHERE (title LIKE ? OR summary LIKE ?) ORDER BY created_at DESC");
-    $stmt_game->execute(['%' . $searchQuery . '%', '%' . $searchQuery . '%']);
-    $gameNews = $stmt_game->fetchAll(PDO::FETCH_ASSOC);
-}
+// Lấy danh sách tin tức từ các bảng khác nhau dựa trên bộ lọc và tìm kiếm có phân trang
+$allNews = [];
 
-if ($filterType === 'all' || $filterType === 'celebrity') {
-    $stmt_celebrity = $pdo->prepare("SELECT 'celebrity' as type, celebrity_news_id as id, title, summary, is_published, created_at, image FROM celebrity_news WHERE (title LIKE ? OR summary LIKE ?) ORDER BY created_at DESC");
-    $stmt_celebrity->execute(['%' . $searchQuery . '%', '%' . $searchQuery . '%']);
-    $celebrityNews = $stmt_celebrity->fetchAll(PDO::FETCH_ASSOC);
-}
+$sql = "SELECT type, id, title, summary, is_published, created_at, image
+        FROM (
+            SELECT 'general' as type, news_id as id, title, summary, is_published, created_at, image FROM news
+            UNION ALL
+            SELECT 'football' as type, football_news_id as id, title, summary, is_published, created_at, image FROM football_news
+            UNION ALL
+            SELECT 'game' as type, game_news_id as id, title, summary, is_published, created_at, image FROM game_news
+            UNION ALL
+            SELECT 'celebrity' as type, celebrity_news_id as id, title, summary, is_published, created_at, image FROM celebrity_news
+        ) AS combined_news
+        WHERE (:filterType = 'all' OR type = :filterType)
+        AND (combined_news.title LIKE :searchQuery OR combined_news.summary LIKE :searchQuery)
+        ORDER BY created_at DESC
+        LIMIT :limit OFFSET :offset";
 
-// Gộp tất cả các loại tin tức và sắp xếp theo thời gian tạo
-$allNews = array_merge($generalNews, $footballNews, $gameNews, $celebrityNews);
-usort($allNews, function ($a, $b) {
-    return strtotime($b['created_at']) - strtotime($a['created_at']);
-});
+$stmt_all = $pdo->prepare($sql);
+$stmt_all->bindValue(':filterType', $filterType);
+$stmt_all->bindValue(':searchQuery', '%' . $searchQuery . '%');
+$stmt_all->bindValue(':limit', $itemsPerPage, PDO::PARAM_INT);
+$stmt_all->bindValue(':offset', $offset, PDO::PARAM_INT);
+$stmt_all->execute();
+$allNews = $stmt_all->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <!DOCTYPE html>
@@ -65,8 +94,28 @@ usort($allNews, function ($a, $b) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Admin - News Management</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <style>
+        .news-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+        .news-card {
+            background-white shadow-md rounded-md overflow-hidden;
+        }
+        .news-card img {
+            width: 100%;
+            height: auto;
+            object-fit: cover;
+            max-height: 150px;
+        }
+        .news-card-content {
+            padding: 1rem;
+        }
+    </style>
 </head>
 <body class="bg-gray-100 min-h-screen">
+    <?php include_once '../navbar/header_admin.php' ?>
     <div class="container mx-auto py-8 px-4">
         <h1 class="text-3xl font-semibold text-gray-800 mb-6">Admin Panel - News Management</h1>
 
@@ -79,95 +128,92 @@ usort($allNews, function ($a, $b) {
             <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2 focus:outline-none focus:shadow-outline">Search</button>
         </form>
 
-        <h2 class="text-xl font-semibold text-gray-700 mb-2">Manage News</h2>
-        <div class="mb-4 flex flex-wrap gap-2">
-            <a href="/cutonama3/admin/create.php" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Add General</a>
-            <a href="/cutonama3/admin/create_football.php" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Add Football</a>
-            <a href="/cutonama3/admin/create_game.php" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Add Game</a>
-            <a href="/cutonama3/admin/create_celebrity.php" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Add Celebrity</a>
+        <div class="mb-4 flex flex-wrap gap-2 items-center justify-between">
+            <div>
+                <a href="/cutonama3/admin/create.php" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Add General</a>
+                <a href="/cutonama3/admin/create_football.php" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Add Football</a>
+                <a href="/cutonama3/admin/create_game.php" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Add Game</a>
+                <a href="/cutonama3/admin/create_celebrity.php" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Add Celebrity</a>
+            </div>
+            <div>
+                <select name="filter" class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" aria-label="Filter news" onchange="this.form.submit()">
+                    <option value="all" <?php if ($filterType === 'all') echo 'selected'; ?>>All News</option>
+                    <option value="general" <?php if ($filterType === 'general') echo 'selected'; ?>>General News</option>
+                    <option value="football" <?php if ($filterType === 'football') echo 'selected'; ?>>Football News</option>
+                    <option value="game" <?php if ($filterType === 'game') echo 'selected'; ?>>Game News</option>
+                    <option value="celebrity" <?php if ($filterType === 'celebrity') echo 'selected'; ?>>Celebrity News</option>
+                </select>
+            </div>
         </div>
 
-        <div class="mb-4">
-            <select name="filter" class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" aria-label="Filter news" onchange="this.form.submit()">
-                <option value="all" <?php if ($filterType === 'all') echo 'selected'; ?>>All News</option>
-                <option value="general" <?php if ($filterType === 'general') echo 'selected'; ?>>General News</option>
-                <option value="football" <?php if ($filterType === 'football') echo 'selected'; ?>>Football News</option>
-                <option value="game" <?php if ($filterType === 'game') echo 'selected'; ?>>Game News</option>
-                <option value="celebrity" <?php if ($filterType === 'celebrity') echo 'selected'; ?>>Celebrity News</option>
-            </select>
-        </div>
+        <h2 class="text-xl font-semibold text-gray-700 mb-2">News List</h2>
+        <?php if (empty($allNews)): ?>
+            <p class="text-gray-500">No news found.</p>
+        <?php else: ?>
+            <div class="news-grid">
+                <?php foreach ($allNews as $news): ?>
+                    <div class="news-card">
+                        <?php if ($news['image']): ?>
+                            <img src="<?php echo htmlspecialchars($news['image']); ?>" alt="<?php echo htmlspecialchars($news['title']); ?>">
+                        <?php else: ?>
+                            <div class="bg-gray-200 h-32 flex items-center justify-center text-gray-500">No Image</div>
+                        <?php endif; ?>
+                        <div class="news-card-content">
+                            <h3 class="font-semibold text-gray-800 mb-1"><?php echo htmlspecialchars($news['title']); ?></h3>
+                            <p class="text-gray-600 text-sm mb-2"><?php echo htmlspecialchars(substr($news['summary'], 0, 80)) . '...'; ?></p>
+                            <div class="flex items-center justify-between text-xs text-gray-500">
+                                <span>Type: <span class="font-medium"><?php echo ucfirst($news['type']); ?></span></span>
+                                <span>Published: <?php echo $news['is_published'] ? '<span class="text-green-600 font-medium">Yes</span>' : '<span class="text-red-600 font-medium">No</span>'; ?></span>
+                                <span>Date: <?php echo date('Y-m-d', strtotime($news['created_at'])); ?></span>
+                            </div>
+                            <div class="mt-2">
+                                <?php
+                                $editUrl = '';
+                                $deleteUrl = '';
+                                $idKey = '';
+                                switch ($news['type']) {
+                                    case 'general':
+                                        $editUrl = '/cutonama3/admin/edit.php?id=';
+                                        $deleteUrl = '/cutonama3/admin/delete.php?id=';
+                                        $idKey = 'news_id';
+                                        break;
+                                    case 'football':
+                                        $editUrl = '/cutonama3/admin/edit_football.php?id=';
+                                        $deleteUrl = '/cutonama3/admin/delete_football.php?id=';
+                                        $idKey = 'id';
+                                        break;
+                                    case 'game':
+                                        $editUrl = '/cutonama3/admin/edit_game.php?id=';
+                                        $deleteUrl = '/cutonama3/admin/delete_game.php?id=';
+                                        $idKey = 'id';
+                                        break;
+                                    case 'celebrity':
+                                        $editUrl = '/cutonama3/admin/edit_celebrity.php?id=';
+                                        $deleteUrl = '/cutonama3/admin/delete_celebrity.php?id=';
+                                        $idKey = 'id';
+                                        break;
+                                }
+                                ?>
+                                <a href="<?php echo $editUrl . $news[$idKey]; ?>" class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded text-xs mr-1">Edit</a>
+                                <a href="<?php echo $deleteUrl . $news[$idKey]; ?>" class="inline-block bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded text-xs" onclick="return confirm('Are you sure you want to delete this news?')">Delete</a>
+                            </div>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+            </div>
 
-        <div class="overflow-x-auto bg-white shadow-md rounded-md">
-            <table class="min-w-full leading-normal">
-                <thead class="bg-gray-50">
-                    <tr>
-                        <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Type</th>
-                        <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Title</th>
-                        <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Summary</th>
-                        <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Published</th>
-                        <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Created At</th>
-                        <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Image</th>
-                        <th class="px-5 py-3 border-b-2 border-gray-200 text-left text-xs font-semibold text-gray-600 uppercase tracking-wider">Actions</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if (empty($allNews)): ?>
-                        <tr><td colspan="7" class="px-5 py-5 border-b border-gray-200 text-sm text-gray-500 text-center">No news found.</td></tr>
-                    <?php else: ?>
-                        <?php foreach ($allNews as $news): ?>
-                            <tr>
-                                <td class="px-5 py-5 border-b border-gray-200 text-sm"><?php echo ucfirst($news['type']); ?></td>
-                                <td class="px-5 py-5 border-b border-gray-200 text-sm"><?php echo htmlspecialchars($news['title']); ?></td>
-                                <td class="px-5 py-5 border-b border-gray-200 text-sm"><?php echo htmlspecialchars(substr($news['summary'], 0, 100)) . '...'; ?></td>
-                                <td class="px-5 py-5 border-b border-gray-200 text-sm">
-                                    <?php echo $news['is_published'] ? '<span class="inline-block bg-green-200 text-green-800 py-1 px-2 rounded-full text-xs font-semibold">Published</span>' : '<span class="inline-block bg-red-200 text-red-800 py-1 px-2 rounded-full text-xs font-semibold">Unpublished</span>'; ?>
-                                </td>
-                                <td class="px-5 py-5 border-b border-gray-200 text-sm"><?php echo $news['created_at']; ?></td>
-                                <td class="px-5 py-5 border-b border-gray-200 text-sm">
-                                    <?php if ($news['image']): ?>
-                                        <img src="<?php echo htmlspecialchars($news['image']); ?>" alt="Image" class="w-16 h-16 object-cover rounded">
-                                    <?php else: ?>
-                                        No image
-                                    <?php endif; ?>
-                                </td>
-                                <td class="px-5 py-5 border-b border-gray-200 text-sm">
-                                    <?php
-                                    $editUrl = '';
-                                    $deleteUrl = '';
-                                    $idKey = '';
-                                    switch ($news['type']) {
-                                        case 'general':
-                                            $editUrl = '/cutonama3/admin/edit.php?id=';
-                                            $deleteUrl = '/cutonama3/admin/delete.php?id=';
-                                            $idKey = 'news_id';
-                                            break;
-                                        case 'football':
-                                            $editUrl = '/cutonama3/admin/edit_football.php?id=';
-                                            $deleteUrl = '/cutonama3/admin/delete_football.php?id=';
-                                            $idKey = 'id';
-                                            break;
-                                        case 'game':
-                                            $editUrl = '/cutonama3/admin/edit_game.php?id=';
-                                            $deleteUrl = '/cutonama3/admin/delete_game.php?id=';
-                                            $idKey = 'id';
-                                            break;
-                                        case 'celebrity':
-                                            $editUrl = '/cutonama3/admin/edit_celebrity.php?id=';
-                                            $deleteUrl = '/cutonama3/admin/delete_celebrity.php?id=';
-                                            $idKey = 'id';
-                                            break;
-                                    }
-                                    ?>
-                                    <a href="<?php echo $editUrl . $news[$idKey]; ?>" class="text-blue-500 hover:text-blue-700">Edit</a>
-                                    <span class="text-gray-300">|</span>
-                                    <a href="<?php echo $deleteUrl . $news[$idKey]; ?>" class="text-red-500 hover:text-red-700" onclick="return confirm('Are you sure you want to delete this news?')">Delete</a>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>
+            <?php if ($totalPages > 1): ?>
+                <div class="mt-6 flex justify-center">
+                    <?php for ($i = 1; $i <= $totalPages; $i++): ?>
+                        <a href="?page=<?php echo $i; ?><?php if (!empty($searchQuery)) echo '&search=' . htmlspecialchars($searchQuery); ?><?php if ($filterType !== 'all') echo '&filter=' . $filterType; ?>"
+                           class="px-3 py-2 <?php echo $page == $i ? 'bg-blue-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-200'; ?> border rounded mr-1">
+                            <?php echo $i; ?>
+                        </a>
+                    <?php endfor; ?>
+                </div>
+            <?php endif; ?>
+
+        <?php endif; ?>
     </div>
 </body>
 </html>

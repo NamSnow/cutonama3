@@ -1,6 +1,6 @@
 <?php
 $host = 'localhost';
-$dbname = 'lamcutoa3';
+$dbname = '1';
 $username = 'root'; // Thay bằng username của bạn
 $password = ''; // Thay bằng password của bạn
 

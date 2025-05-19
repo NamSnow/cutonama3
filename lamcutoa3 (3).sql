@@ -40,39 +40,39 @@ CREATE TABLE `access_logs` (
 --
 
 INSERT INTO `access_logs` (`log_id`, `access_time`, `ip_address`, `user_agent`, `page_url`) VALUES
-(1, '2025-04-13 09:42:33', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/'),
-(2, '2025-04-13 09:44:22', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/'),
-(3, '2025-04-13 09:45:32', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/'),
-(4, '2025-04-13 09:45:58', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/'),
-(5, '2025-04-13 09:46:35', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/index.php'),
-(6, '2025-04-13 09:52:45', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/index.php'),
-(7, '2025-04-13 09:55:07', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/index.php'),
-(8, '2025-04-13 09:55:15', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/index.php'),
-(9, '2025-04-13 09:55:49', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/index.php'),
-(10, '2025-04-13 09:55:52', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/index.php'),
-(11, '2025-04-13 09:56:42', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/index.php'),
-(12, '2025-04-13 09:56:50', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/index.php'),
-(13, '2025-04-13 09:57:24', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/index.php'),
-(14, '2025-04-13 09:57:25', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/index.php'),
-(15, '2025-04-13 09:57:28', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/index.php'),
-(16, '2025-04-13 09:57:44', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/index.php'),
-(17, '2025-04-13 09:57:45', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/index.php'),
-(18, '2025-04-13 09:59:23', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/index.php'),
-(19, '2025-04-13 09:59:30', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/'),
-(20, '2025-04-13 10:00:37', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/'),
-(21, '2025-04-13 10:00:45', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/?search=12'),
-(22, '2025-04-13 10:00:46', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/?search=12'),
-(23, '2025-04-13 10:00:54', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/index.php'),
-(24, '2025-04-13 10:01:03', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/index.php?search=3'),
-(25, '2025-04-18 15:02:23', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/'),
-(26, '2025-04-18 15:22:24', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/'),
-(27, '2025-04-18 15:22:45', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/'),
-(28, '2025-04-18 15:24:16', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/index.php'),
-(29, '2025-04-18 15:24:25', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/index.php?search=2'),
-(30, '2025-04-18 15:24:27', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/index.php?search=2'),
-(31, '2025-04-18 15:24:30', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/index.php?search=2323'),
-(32, '2025-04-19 14:33:30', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/'),
-(33, '2025-04-19 14:33:35', '::1', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/135.0.0.0 Safari/537.36', '/cutonama3/admin/index.php');
+(1, '2025-04-20 17:00:00', '192.168.1.100', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36', 'http://localhost/'),
+(2, '2025-04-20 17:05:00', '10.0.0.5', 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.4 Mobile/15E148 Safari/604.1', 'http://localhost/news/1'),
+(3, '2025-04-20 17:10:00', '192.168.1.101', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0', 'http://localhost/celebrity/2'),
+(4, '2025-04-20 17:15:00', '10.0.0.6', 'Mozilla/5.0 (iPad; CPU OS 16_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.4 Mobile/15E148 Safari/604.1', 'http://localhost/football/3'),
+(5, '2025-04-20 17:20:00', '192.168.1.102', 'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36', 'http://localhost/game/1'),
+(6, '2025-04-20 17:25:00', '10.0.0.7', 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_4 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) CriOS/112.0.5615.137 Mobile/15E148 Safari/604.1', 'http://localhost/'),
+(7, '2025-04-20 17:30:00', '192.168.1.103', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.4 Safari/605.1.15', 'http://localhost/news/4'),
+(8, '2025-04-20 17:35:00', '10.0.0.8', 'Mozilla/5.0 (Linux; Android 10; SM-G975F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36', 'http://localhost/celebrity/5'),
+(9, '2025-04-20 17:40:00', '192.168.1.104', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Edge/112.0.1722.58 Safari/537.36', 'http://localhost/football/6'),
+(10, '2025-04-20 17:45:00', '10.0.0.9', 'Mozilla/5.0 (Linux; Android 11; Pixel 4a) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36', 'http://localhost/game/2'),
+(11, '2025-04-20 17:50:00', '192.168.1.105', 'Mozilla/5.0 (X11; Ubuntu; Linux x86_64; rv:109.0) Gecko/20100101 Firefox/112.0', 'http://localhost/'),
+(12, '2025-04-20 17:55:00', '10.0.0.10', 'Mozilla/5.0 (iPad; CPU OS 15_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.6 Mobile/15E148 Safari/604.1', 'http://localhost/news/7'),
+(13, '2025-04-20 18:00:00', '192.168.1.106', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36', 'http://localhost/celebrity/8'),
+(14, '2025-04-20 18:05:00', '10.0.0.11', 'Mozilla/5.0 (Linux; Android 12; SM-G991B) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36', 'http://localhost/football/1'),
+(15, '2025-04-20 18:10:00', '192.168.1.107', 'Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:102.0) Gecko/20100101 Firefox/102.0', 'http://localhost/game/3'),
+(16, '2025-04-20 18:15:00', '10.0.0.12', 'Mozilla/5.0 (iPhone; CPU iPhone OS 15_5 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/15.5 Mobile/15E148 Safari/604.1', 'http://localhost/'),
+(17, '2025-04-20 18:20:00', '192.168.1.108', 'Mozilla/5.0 (X11; Linux aarch64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36', 'http://localhost/news/2'),
+(18, '2025-04-20 18:25:00', '10.0.0.13', 'Mozilla/5.0 (iPad; CPU OS 14_8 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.8 Mobile/15E148 Safari/604.1', 'http://localhost/celebrity/3'),
+(19, '2025-04-20 18:30:00', '192.168.1.109', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_16) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/17.0 Safari/605.1.15', 'http://localhost/football/4'),
+(20, '2025-04-20 18:35:00', '10.0.0.14', 'Mozilla/5.0 (Linux; Android 9; SM-G960F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36', 'http://localhost/game/4'),
+(21, '2025-04-20 18:40:00', '192.168.1.110', 'Mozilla/5.0 (Windows NT 6.1; Win64; x64; rv:109.0) Gecko/20100101 Firefox/112.0', 'http://localhost/'),
+(22, '2025-04-20 18:45:00', '10.0.0.15', 'Mozilla/5.0 (iPhone; CPU iPhone OS 14_7_1 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/14.7.1 Mobile/15E148 Safari/604.1', 'http://localhost/news/5'),
+(23, '2025-04-20 18:50:00', '192.168.1.111', 'Mozilla/5.0 (X11; CrOS armv7l 13597.84.0) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/88.0.4324.192 Safari/537.36', 'http://localhost/celebrity/6'),
+(24, '2025-04-20 18:55:00', '10.0.0.16', 'Mozilla/5.0 (iPad; CPU OS 13_6 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.2 Mobile/15E148 Safari/604.1', 'http://localhost/football/5'),
+(25, '2025-04-20 19:00:00', '192.168.1.112', 'Mozilla/5.0 (Linux; Android 13; Pixel 7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36', 'http://localhost/game/5'),
+(26, '2025-04-20 19:05:00', '10.0.0.17', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_14_6) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/13.1.3 Safari/605.1.15', 'http://localhost/'),
+(27, '2025-04-20 19:10:00', '192.168.1.113', 'Mozilla/5.0 (Windows NT 6.3; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36', 'http://localhost/news/6'),
+(28, '2025-04-20 19:15:00', '10.0.0.18', 'Mozilla/5.0 (Linux; Android 10; Redmi Note 8 Pro) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36', 'http://localhost/celebrity/7'),
+(29, '2025-04-20 19:20:00', '192.168.1.114', 'Mozilla/5.0 (X11; Ubuntu; Linux i686; rv:109.0) Gecko/20100101 Firefox/112.0', 'http://localhost/football/7'),
+(30, '2025-04-20 19:25:00', '10.0.0.19', 'Mozilla/5.0 (iPhone; CPU iPhone OS 16_3 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/16.3 Mobile/15E148 Safari/604.1', 'http://localhost/game/6'),
+(31, '2025-04-20 19:30:00', '192.168.1.115', 'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_13_6) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Safari/537.36', 'http://localhost/'),
+(32, '2025-04-20 19:35:00', '10.0.0.20', 'Mozilla/5.0 (Linux; Android 11; SM-A525F) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/112.0.0.0 Mobile Safari/537.36', 'http://localhost/news/3'),
+(33, '2025-04-20 19:40:00', '192.168.1.116', 'Mozilla/5.0 (Windows NT 10.0; WOW64; rv:109.0) Gecko/20100101 Firefox/112.0', 'http://localhost/celebrity/4');
 
 -- --------------------------------------------------------
 
@@ -102,10 +102,9 @@ CREATE TABLE `celebrity_news` (
   `content` text DEFAULT NULL,
   `image` varchar(255) DEFAULT NULL,
   `view_count` int(11) DEFAULT 0,
-  `is_published` tinyint(1) DEFAULT 1,
+  `is_published` tiny int(1) DEFAULT 1,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `user_id` int(11) DEFAULT NULL,
   `celebrity_name` varchar(255) DEFAULT NULL,
   `category` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -114,15 +113,15 @@ CREATE TABLE `celebrity_news` (
 -- Đang đổ dữ liệu cho bảng `celebrity_news`
 --
 
-INSERT INTO `celebrity_news` (`celebrity_news_id`, `title`, `slug`, `summary`, `content`, `image`, `view_count`, `is_published`, `created_at`, `updated_at`, `user_id`, `celebrity_name`, `category`) VALUES
-(1, 'Sơn Tùng M-TP ra mắt MV mới gây sốt', 'son-tung-m-tp-mv-moi', 'MV mới nhất của Sơn Tùng M-TP đang nhận được sự quan tâm lớn từ khán giả.', 'Nội dung chi tiết về quá trình sản xuất, ý tưởng MV...', 'assets/celebrity/sontung.jpg', 1500, 1, '2025-04-19 03:45:00', '2025-04-19 03:45:00', 9, 'Sơn Tùng M-TP', 'Ca sĩ'),
-(2, 'Hồ Ngọc Hà lần đầu chia sẻ về cuộc sống gia đình', 'ho-ngoc-ha-chia-se-gia-dinh', 'Những tiết lộ cảm động của Hồ Ngọc Hà về tổ ấm hạnh phúc.', 'Bài phỏng vấn độc quyền về các thành viên trong gia đình...', 'assets/celebrity/hongocHa.jpg', 1200, 1, '2025-04-19 03:45:30', '2025-04-19 03:45:30', 10, 'Hồ Ngọc Hà', 'Ca sĩ'),
-(3, 'Chi Pu lấn sân sang lĩnh vực điện ảnh', 'chi-pu-lan-san-dien-anh', 'Chi Pu chính thức tham gia dự án phim điện ảnh mới.', 'Thông tin về vai diễn, đạo diễn và các diễn viên khác...', 'assets/celebrity/chipu.jpg', 900, 1, '2025-04-19 03:46:00', '2025-04-19 03:46:00', 9, 'Chi Pu', 'Diễn viên'),
-(4, 'Ngọc Trinh gây tranh cãi với phát ngôn mới', 'ngoc-trinh-gay-tranh-cai', 'Phát ngôn của Ngọc Trinh về vấn đề...', 'Toàn bộ nội dung phát ngôn và phản ứng của dư luận...', 'assets/celebrity/ngoctrinh.jpg', 1800, 1, '2025-04-19 03:46:30', '2025-04-19 03:46:30', 10, 'Ngọc Trinh', 'Người mẫu'),
-(5, 'Isaac tái xuất với hình ảnh lịch lãm', 'isaac-tai-xuat', 'Isaac trở lại showbiz sau thời gian vắng bóng.', 'Hình ảnh mới nhất và dự án âm nhạc sắp tới của Isaac...', 'assets/celebrity/isaac.jpg', 1100, 1, '2025-04-19 03:47:00', '2025-04-19 03:47:00', 9, 'Isaac', 'Ca sĩ'),
-(6, 'Lan Khuê hé lộ bí quyết giữ dáng sau sinh', 'lan-khue-bi-quyet-sau-sinh', 'Những chia sẻ hữu ích của Lan Khuê về việc lấy lại vóc dáng.', 'Các phương pháp tập luyện và chế độ ăn uống của siêu mẫu...', 'assets/celebrity/lankhue.jpg', 1300, 1, '2025-04-19 03:47:30', '2025-04-19 03:47:30', 10, 'Lan Khuê', 'Người mẫu'),
-(7, 'Trấn Thành đạo diễn phim điện ảnh mới', 'tran-thanh-dao-dien-phim', 'Trấn Thành tiếp tục thử sức với vai trò đạo diễn.', 'Thông tin về dự án phim, dàn diễn viên và lịch chiếu dự kiến...', 'assets/celebrity/tranthanh.jpg', 1600, 1, '2025-04-19 03:48:00', '2025-04-19 03:48:00', 9, 'Trấn Thành', 'Diễn viên'),
-(8, 'Mỹ Tâm tổ chức liveshow kỷ niệm sự nghiệp', 'my-tam-liveshow-ky-niem', 'Mỹ Tâm thông báo về liveshow đặc biệt đánh dấu chặng đường ca hát.', 'Chi tiết về thời gian, địa điểm và khách mời của liveshow...', 'assets/celebrity/mytam.jpg', 2000, 1, '2025-04-19 03:48:30', '2025-04-19 03:48:30', 10, 'Mỹ Tâm', 'Ca sĩ');
+INSERT INTO `celebrity_news` (`celebrity_news_id`, `title`, `slug`, `summary`, `content`, `image`, `view_count`, `is_published`, `created_at`, `updated_at`, `celebrity_name`, `category`) VALUES
+(1, 'Sơn Tùng M-TP ra mắt MV mới gây sốt', 'son-tung-m-tp-mv-moi', 'MV mới nhất của Sơn Tùng M-TP đang nhận được sự quan tâm lớn từ khán giả.', 'Nội dung chi tiết về quá trình sản xuất, ý tưởng MV...', 'assets/celebrity/sontung.jpg', 1500, 1, '2025-04-19 03:45:00', '2025-04-19 03:45:00', 'Sơn Tùng M-TP', 'Ca sĩ'),
+(2, 'Hồ Ngọc Hà lần đầu chia sẻ về cuộc sống gia đình', 'ho-ngoc-ha-chia-se-gia-dinh', 'Những tiết lộ cảm động của Hồ Ngọc Hà về tổ ấm hạnh phúc.', 'Bài phỏng vấn độc quyền về các thành viên trong gia đình...', 'assets/celebrity/hongocHa.jpg', 1200, 1, '2025-04-19 03:45:30', '2025-04-19 03:45:30', 'Hồ Ngọc Hà', 'Ca sĩ'),
+(3, 'Chi Pu lấn sân sang lĩnh vực điện ảnh', 'chi-pu-lan-san-dien-anh', 'Chi Pu chính thức tham gia dự án phim điện ảnh mới.', 'Thông tin về vai diễn, đạo diễn và các diễn viên khác...', 'assets/celebrity/chipu.jpg', 900, 1, '2025-04-19 03:46:00', '2025-04-19 03:46:00', 'Chi Pu', 'Diễn viên'),
+(4, 'Ngọc Trinh gây tranh cãi với phát ngôn mới', 'ngoc-trinh-gay-tranh-cai', 'Phát ngôn của Ngọc Trinh về vấn đề...', 'Toàn bộ nội dung phát ngôn và phản ứng của dư luận...', 'assets/celebrity/ngoctrinh.jpg', 1800, 1, '2025-04-19 03:46:30', '2025-04-19 03:46:30', 'Ngọc Trinh', 'Người mẫu'),
+(5, 'Isaac tái xuất với hình ảnh lịch lãm', 'isaac-tai-xuat', 'Isaac trở lại showbiz sau thời gian vắng bóng.', 'Hình ảnh mới nhất và dự án âm nhạc sắp tới của Isaac...', 'assets/celebrity/isaac.jpg', 1100, 1, '2025-04-19 03:47:00', '2025-04-19 03:47:00', 'Isaac', 'Ca sĩ'),
+(6, 'Lan Khuê hé lộ bí quyết giữ dáng sau sinh', 'lan-khue-bi-quyet-sau-sinh', 'Những chia sẻ hữu ích của Lan Khuê về việc lấy lại vóc dáng.', 'Các phương pháp tập luyện và chế độ ăn uống của siêu mẫu...', 'assets/celebrity/lankhue.jpg', 1300, 1, '2025-04-19 03:47:30', '2025-04-19 03:47:30', 'Lan Khuê', 'Người mẫu'),
+(7, 'Trấn Thành đạo diễn phim điện ảnh mới', 'tran-thanh-dao-dien-phim', 'Trấn Thành tiếp tục thử sức với vai trò đạo diễn.', 'Thông tin về dự án phim, dàn diễn viên và lịch chiếu dự kiến...', 'assets/celebrity/tranthanh.jpg', 1600, 1, '2025-04-19 03:48:00', '2025-04-19 03:48:00', 'Trấn Thành', 'Diễn viên'),
+(8, 'Mỹ Tâm tổ chức liveshow kỷ niệm sự nghiệp', 'my-tam-liveshow-ky-niem', 'Mỹ Tâm thông báo về liveshow đặc biệt đánh dấu chặng đường ca hát.', 'Chi tiết về thời gian, địa điểm và khách mời của liveshow...', 'assets/celebrity/mytam.jpg', 2000, 1, '2025-04-19 03:48:30', '2025-04-19 03:48:30', 'Mỹ Tâm', 'Ca sĩ');
 
 -- --------------------------------------------------------
 
@@ -141,7 +140,6 @@ CREATE TABLE `football_news` (
   `is_published` tinyint(1) DEFAULT 1,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `user_id` int(11) DEFAULT NULL,
   `match_date` datetime DEFAULT NULL,
   `teams` varchar(255) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -150,15 +148,15 @@ CREATE TABLE `football_news` (
 -- Đang đổ dữ liệu cho bảng `football_news`
 --
 
-INSERT INTO `football_news` (`football_news_id`, `title`, `slug`, `summary`, `content`, `image`, `view_count`, `is_published`, `created_at`, `updated_at`, `user_id`, `match_date`, `teams`) VALUES
-(1, 'Kết quả trận đấu Manchester United vs Liverpool: Quỷ đỏ thua đậm', 'man-utd-vs-liverpool', 'Manchester United nhận thất bại nặng nề trước Liverpool trên sân nhà.', 'Diễn biến chi tiết của trận đấu, các bàn thắng và điểm nhấn...', 'assets/football/mu-liverpool.jpg', 2500, 1, '2025-04-19 03:41:00', '2025-04-19 03:41:00', 9, '2025-04-18 23:30:00', 'Manchester United vs Liverpool'),
-(2, 'Arsenal ngược dòng đánh bại Tottenham trong trận derby Bắc London', 'arsenal-vs-tottenham', 'Arsenal đã có màn trình diễn ấn tượng để lội ngược dòng giành chiến thắng trước Tottenham.', 'Phân tích chiến thuật, các cầu thủ ghi bàn và những khoảnh khắc đáng chú ý...', 'assets/football/arsenal-tottenham.jpg', 2200, 1, '2025-04-19 03:41:30', '2025-04-19 03:41:30', 10, '2025-04-18 21:00:00', 'Arsenal vs Tottenham'),
-(3, 'Real Madrid vô địch La Liga sớm 3 vòng đấu', 'real-madrid-vo-dich-la-liga', 'Real Madrid chính thức lên ngôi vô địch La Liga mùa giải 2024-2025.', 'Hành trình vô địch, những đóng góp của các cầu thủ chủ chốt...', 'assets/football/real-vcl.jpg', 2800, 1, '2025-04-19 03:42:00', '2025-04-19 03:42:00', 9, NULL, 'Real Madrid'),
-(4, 'Bayern Munich giành chiến thắng nghẹt thở trước Borussia Dortmund', 'bayern-vs-dortmund', 'Trận cầu đỉnh cao giữa Bayern Munich và Borussia Dortmund kết thúc với chiến thắng sát nút cho Hùm xám.', 'Tường thuật trực tiếp, những pha bóng gay cấn và kết quả cuối cùng...', 'assets/football/bayern-dortmund.jpg', 2100, 1, '2025-04-19 03:42:30', '2025-04-19 03:42:30', 10, '2025-04-19 01:45:00', 'Bayern Munich vs Borussia Dortmund'),
-(5, 'Lionel Messi lập hat-trick giúp PSG đè bẹp đối thủ', 'messi-hattrick-psg', 'Lionel Messi tiếp tục phong độ ấn tượng với một cú hat-trick trong trận đấu vừa qua.', 'Thống kê chi tiết về các bàn thắng và màn trình diễn của Messi...', 'assets/football/messi-psg.jpg', 2600, 1, '2025-04-19 03:43:00', '2025-04-19 03:43:00', 9, NULL, 'PSG'),
-(6, 'Chelsea bất ngờ thua sốc trên sân nhà', 'chelsea-thua-soc', 'Chelsea đã phải nhận một thất bại khó tin ngay tại Stamford Bridge.', 'Phân tích nguyên nhân thất bại và những vấn đề của The Blues...', 'assets/football/chelsea-thua.jpg', 1900, 1, '2025-04-19 03:43:30', '2025-04-19 03:43:30', 10, '2025-04-19 02:00:00', 'Chelsea'),
-(7, 'Cristiano Ronaldo ghi bàn thắng thứ 800 trong sự nghiệp', 'ronaldo-ban-thang-800', 'Cristiano Ronaldo đạt cột mốc lịch sử với bàn thắng thứ 800 trong sự nghiệp thi đấu chuyên nghiệp.', 'Nhìn lại hành trình sự nghiệp và những kỷ lục của Ronaldo...', 'assets/football/ronaldo-800.jpg', 3000, 1, '2025-04-19 03:44:00', '2025-04-19 03:44:00', 9, NULL, 'Cristiano Ronaldo'),
-(8, 'Man City thắng đậm, tiến gần chức vô địch Ngoại hạng Anh', 'man-city-thang-dam', 'Manchester City có chiến thắng thuyết phục, củng cố vị trí đầu bảng.', 'Diễn biến trận đấu và cơ hội vô địch của Man City...', 'assets/football/mancity-thang.jpg', 2300, 1, '2025-04-19 03:44:30', '2025-04-19 03:44:30', 10, '2025-04-19 00:30:00', 'Manchester City');
+INSERT INTO `football_news` (`football_news_id`, `title`, `slug`, `summary`, `content`, `image`, `view_count`, `is_published`, `created_at`, `updated_at`, `match_date`, `teams`) VALUES
+(1, 'Kết quả trận đấu Manchester United vs Liverpool: Quỷ đỏ thua đậm', 'man-utd-vs-liverpool', 'Manchester United nhận thất bại nặng nề trước Liverpool trên sân nhà.', 'Diễn biến chi tiết của trận đấu, các bàn thắng và điểm nhấn...', 'assets/football/mu-liverpool.jpg', 2500, 1, '2025-04-19 03:41:00', '2025-04-19 03:41:00', '2025-04-18 23:30:00', 'Manchester United vs Liverpool'),
+(2, 'Arsenal ngược dòng đánh bại Tottenham trong trận derby Bắc London', 'arsenal-vs-tottenham', 'Arsenal đã có màn trình diễn ấn tượng để lội ngược dòng giành chiến thắng trước Tottenham.', 'Phân tích chiến thuật, các cầu thủ ghi bàn và những khoảnh khắc đáng chú ý...', 'assets/football/arsenal-tottenham.jpg', 2200, 1, '2025-04-19 03:41:30', '2025-04-19 03:41:30', '2025-04-18 21:00:00', 'Arsenal vs Tottenham'),
+(3, 'Real Madrid vô địch La Liga sớm 3 vòng đấu', 'real-madrid-vo-dich-la-liga', 'Real Madrid chính thức lên ngôi vô địch La Liga mùa giải 2024-2025.', 'Hành trình vô địch, những đóng góp của các cầu thủ chủ chốt...', 'assets/football/real-vcl.jpg', 2800, 1, '2025-04-19 03:42:00', '2025-04-19 03:42:00', NULL, 'Real Madrid'),
+(4, 'Bayern Munich giành chiến thắng nghẹt thở trước Borussia Dortmund', 'bayern-vs-dortmund', 'Trận cầu đỉnh cao giữa Bayern Munich và Borussia Dortmund kết thúc với chiến thắng sát nút cho Hùm xám.', 'Tường thuật trực tiếp, những pha bóng gay cấn và kết quả cuối cùng...', 'assets/football/bayern-dortmund.jpg', 2100, 1, '2025-04-19 03:42:30', '2025-04-19 03:42:30', '2025-04-19 01:45:00', 'Bayern Munich vs Borussia Dortmund'),
+(5, 'Lionel Messi lập hat-trick giúp PSG đè bẹp đối thủ', 'messi-hattrick-psg', 'Lionel Messi tiếp tục phong độ ấn tượng với một cú hat-trick trong trận đấu vừa qua.', 'Thống kê chi tiết về các bàn thắng và màn trình diễn của Messi...', 'assets/football/messi-psg.jpg', 2600, 1, '2025-04-19 03:43:00', '2025-04-19 03:43:00', NULL, 'PSG'),
+(6, 'Chelsea bất ngờ thua sốc trên sân nhà', 'chelsea-thua-soc', 'Chelsea đã phải nhận một thất bại khó tin ngay tại Stamford Bridge.', 'Phân tích nguyên nhân thất bại và những vấn đề của The Blues...', 'assets/football/chelsea-thua.jpg', 1900, 1, '2025-04-19 03:43:30', '2025-04-19 03:43:30', '2025-04-19 02:00:00', 'Chelsea'),
+(7, 'Cristiano Ronaldo ghi bàn thắng thứ 800 trong sự nghiệp', 'ronaldo-ban-thang-800', 'Cristiano Ronaldo đạt cột mốc lịch sử với bàn thắng thứ 800 trong sự nghiệp thi đấu chuyên nghiệp.', 'Nhìn lại hành trình sự nghiệp và những kỷ lục của Ronaldo...', 'assets/football/ronaldo-800.jpg', 3000, 1, '2025-04-19 03:44:00', '2025-04-19 03:44:00', NULL, 'Cristiano Ronaldo'),
+(8, 'Man City thắng đậm, tiến gần chức vô địch Ngoại hạng Anh', 'man-city-thang-dam', 'Manchester City có chiến thắng thuyết phục, củng cố vị trí đầu bảng.', 'Diễn biến trận đấu và cơ hội vô địch của Man City...', 'assets/football/mancity-thang.jpg', 2300, 1, '2025-04-19 03:44:30', '2025-04-19 03:44:30', '2025-04-19 00:30:00', 'Manchester City');
 
 -- --------------------------------------------------------
 
@@ -177,7 +175,6 @@ CREATE TABLE `game_news` (
   `is_published` tinyint(1) DEFAULT 1,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
   `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `user_id` int(11) DEFAULT NULL,
   `game_title` varchar(255) DEFAULT NULL,
   `platform` varchar(100) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
@@ -186,15 +183,15 @@ CREATE TABLE `game_news` (
 -- Đang đổ dữ liệu cho bảng `game_news`
 --
 
-INSERT INTO `game_news` (`game_news_id`, `title`, `slug`, `summary`, `content`, `image`, `view_count`, `is_published`, `created_at`, `updated_at`, `user_id`, `game_title`, `platform`) VALUES
-(1, 'The Last of Us Part III được hé lộ tại sự kiện lớn', 'the-last-of-us-part-iii-he-lo', 'Naughty Dog chính thức công bố phần tiếp theo của tựa game đình đám The Last of Us.', 'Thông tin chi tiết về cốt truyện, nhân vật và gameplay...', 'assets/game/tlou3.jpg', 3500, 1, '2025-04-19 03:38:00', '2025-04-19 03:38:00', 9, 'The Last of Us Part III', 'PlayStation 5'),
-(2, 'Cyberpunk 2077 Phantom Liberty nhận đánh giá tích cực từ giới phê bình', 'cyberpunk-2077-phantom-liberty-danh-gia', 'Bản mở rộng Phantom Liberty của Cyberpunk 2077 được khen ngợi về cốt truyện và cải tiến gameplay.', 'Tổng hợp các bài đánh giá từ các trang tin game uy tín...', 'assets/game/cp2077-dlc.jpg', 2800, 1, '2025-04-19 03:38:30', '2025-04-19 03:38:30', 10, 'Cyberpunk 2077 Phantom Liberty', 'PC, PlayStation 5, Xbox Series X|S'),
-(3, 'God of War Ragnarök chuẩn bị ra mắt trên PC', 'god-of-war-ragnarok-pc', 'Sony thông báo God of War Ragnarök sẽ có phiên bản PC trong thời gian tới.', 'Ngày phát hành dự kiến, cấu hình yêu cầu và những cải tiến cho PC...', 'assets/game/gow-pc.jpg', 3200, 1, '2025-04-19 03:39:00', '2025-04-19 03:39:00', 9, 'God of War Ragnarök', 'PC'),
-(4, 'Liên Minh Huyền Thoại cập nhật phiên bản mới với nhiều thay đổi', 'lien-minh-huyen-thoai-cap-nhat', 'Riot Games tung ra bản cập nhật lớn cho Liên Minh Huyền Thoại, mang đến nhiều tướng mới và chỉnh sửa cân bằng.', 'Chi tiết về các thay đổi, tướng mới và meta hiện tại...', 'assets/game/lol-update.jpg', 2500, 1, '2025-04-19 03:39:30', '2025-04-19 03:39:30', 10, 'Liên Minh Huyền Thoại', 'PC'),
-(5, 'Elden Ring Shadow of the Erdtree ấn định ngày phát hành', 'elden-ring-shadow-of-the-erdtree', 'DLC được mong chờ nhất của Elden Ring cuối cùng cũng có ngày ra mắt chính thức.', 'Thông tin về cốt truyện, khu vực mới và những boss khủng...', 'assets/game/eldenring-dlc.jpg', 3800, 1, '2025-04-19 03:40:00', '2025-04-19 03:40:00', 9, 'Elden Ring Shadow of the Erdtree', 'PC, PlayStation 5, Xbox Series X|S'),
-(6, 'Nintendo Switch thế hệ mới rò rỉ thông tin về cấu hình', 'nintendo-switch-moi-ro-ri', 'Những tin đồn mới nhất về cấu hình và tính năng của Nintendo Switch 2.', 'Phân tích các thông tin rò rỉ và dự đoán về thời điểm ra mắt...', 'assets/game/switch2.jpg', 2900, 1, '2025-04-19 03:40:30', '2025-04-19 03:40:30', 10, 'Nintendo Switch', 'Console'),
-(7, 'Assassin\'s Creed Red hé lộ bối cảnh Nhật Bản thời phong kiến', 'assassins-creed-red-nhat-ban', 'Ubisoft chính thức giới thiệu Assassin\'s Creed Red lấy bối cảnh Nhật Bản.', 'Những hình ảnh đầu tiên, thông tin về nhân vật và gameplay...', 'assets/game/ac-red.jpg', 3100, 1, '2025-04-19 03:41:00', '2025-04-19 03:41:00', 9, 'Assassin\'s Creed Red', 'PC, PlayStation 5, Xbox Series X|S'),
-(8, 'Starfield nhận bản cập nhật lớn, cải thiện hiệu năng', 'starfield-cap-nhat-hieu-nang', 'Bethesda phát hành bản vá lớn cho Starfield, tập trung vào việc tối ưu hóa hiệu suất.', 'Chi tiết về các cải tiến và những thay đổi khác trong bản cập nhật...', 'assets/game/starfield-update.jpg', 2700, 1, '2025-04-19 03:41:30', '2025-04-19 03:41:30', 10, 'Starfield', 'PC, Xbox Series X|S');
+INSERT INTO `game_news` (`game_news_id`, `title`, `slug`, `summary`, `content`, `image`, `view_count`, `is_published`, `created_at`, `updated_at`, `game_title`, `platform`) VALUES
+(1, 'The Last of Us Part III được hé lộ tại sự kiện lớn', 'the-last-of-us-part-iii-he-lo', 'Naughty Dog chính thức công bố phần tiếp theo của tựa game đình đám The Last of Us.', 'Thông tin chi tiết về cốt truyện, nhân vật và gameplay...', 'assets/game/tlou3.jpg', 3500, 1, '2025-04-19 03:38:00', '2025-04-19 03:38:00', 'The Last of Us Part III', 'PlayStation 5'),
+(2, 'Cyberpunk 2077 Phantom Liberty nhận đánh giá tích cực từ giới phê bình', 'cyberpunk-2077-phantom-liberty-danh-gia', 'Bản mở rộng Phantom Liberty của Cyberpunk 2077 được khen ngợi về cốt truyện và cải tiến gameplay.', 'Tổng hợp các bài đánh giá từ các trang tin game uy tín...', 'assets/game/cp2077-dlc.jpg', 2800, 1, '2025-04-19 03:38:30', '2025-04-19 03:38:30', 'Cyberpunk 2077 Phantom Liberty', 'PC, PlayStation 5, Xbox Series X|S'),
+(3, 'God of War Ragnarök chuẩn bị ra mắt trên PC', 'god-of-war-ragnarok-pc', 'Sony thông báo God of War Ragnarök sẽ có phiên bản PC trong thời gian tới.', 'Ngày phát hành dự kiến, cấu hình yêu cầu và những cải tiến cho PC...', 'assets/game/gow-pc.jpg', 3200, 1, '2025-04-19 03:39:00', '2025-04-19 03:39:00', 'God of War Ragnarök', 'PC'),
+(4, 'Liên Minh Huyền Thoại cập nhật phiên bản mới với nhiều thay đổi', 'lien-minh-huyen-thoai-cap-nhat', 'Riot Games tung ra bản cập nhật lớn cho Liên Minh Huyền Thoại, mang đến nhiều tướng mới và chỉnh sửa cân bằng.', 'Chi tiết về các thay đổi, tướng mới và meta hiện tại...', 'assets/game/lol-update.jpg', 2500, 1, '2025-04-19 03:39:30', '2025-04-19 03:39:30', 'Liên Minh Huyền Thoại', 'PC'),
+(5, 'Elden Ring Shadow of the Erdtree ấn định ngày phát hành', 'elden-ring-shadow-of-the-erdtree', 'DLC được mong chờ nhất của Elden Ring cuối cùng cũng có ngày ra mắt chính thức.', 'Thông tin về cốt truyện, khu vực mới và những boss khủng...', 'assets/game/eldenring-dlc.jpg', 3800, 1, '2025-04-19 03:40:00', '2025-04-19 03:40:00', 'Elden Ring Shadow of the Erdtree', 'PC, PlayStation 5, Xbox Series X|S'),
+(6, 'Nintendo Switch thế hệ mới rò rỉ thông tin về cấu hình', 'nintendo-switch-moi-ro-ri', 'Những tin đồn mới nhất về cấu hình và tính năng của Nintendo Switch 2.', 'Phân tích các thông tin rò rỉ và dự đoán về thời điểm ra mắt...', 'assets/game/switch2.jpg', 2900, 1, '2025-04-19 03:40:30', '2025-04-19 03:40:30', 'Nintendo Switch', 'Console'),
+(7, 'Assassin\'s Creed Red hé lộ bối cảnh Nhật Bản thời phong kiến', 'assassins-creed-red-nhat-ban', 'Ubisoft chính thức giới thiệu Assassin\'s Creed Red lấy bối cảnh Nhật Bản.', 'Những hình ảnh đầu tiên, thông tin về nhân vật và gameplay...', 'assets/game/ac-red.jpg', 3100, 1, '2025-04-19 03:41:00', '2025-04-19 03:41:00', 'Assassin\'s Creed Red', 'PC, PlayStation 5, Xbox Series X|S'),
+(8, 'Starfield nhận bản cập nhật lớn, cải thiện hiệu năng', 'starfield-cap-nhat-hieu-nang', 'Bethesda phát hành bản vá lớn cho Starfield, tập trung vào việc tối ưu hóa hiệu suất.', 'Chi tiết về các cải tiến và những thay đổi khác trong bản cập nhật...', 'assets/game/starfield-update.jpg', 2700, 1, '2025-04-19 03:41:30', '2025-04-19 03:41:30', 'Starfield', 'PC, Xbox Series X|S');
 
 -- --------------------------------------------------------
 
@@ -212,18 +209,17 @@ CREATE TABLE `news` (
   `view_count` int(11) DEFAULT 0,
   `is_published` tinyint(1) DEFAULT 1,
   `created_at` timestamp NOT NULL DEFAULT current_timestamp(),
-  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp(),
-  `user_id` int(11) DEFAULT NULL
+  `updated_at` timestamp NOT NULL DEFAULT current_timestamp() ON UPDATE current_timestamp()
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Đang đổ dữ liệu cho bảng `news`
 --
 
-INSERT INTO `news` (`news_id`, `title`, `slug`, `summary`, `content`, `image`, `view_count`, `is_published`, `created_at`, `updated_at`, `user_id`) VALUES
-(3, '12', NULL, '12', '12', '../assets/image67fb89dfb9bf9-Group 37845.png', 0, 1, '2025-04-13 09:54:39', '2025-04-13 09:54:39', NULL),
-(5, '2323', NULL, '2332', '2323', '../assets/image67fb8b56e0f96-image 387.png', 3, 1, '2025-04-13 10:00:54', '2025-04-18 15:39:39', NULL),
-(6, '1231', NULL, '2323', '3112212', '../assets/image68026ea079447-Acer_Wallpaper_03_5000x2814 - Copy.jpg', 1, 1, '2025-04-18 15:24:16', '2025-04-18 15:39:32', NULL);
+INSERT INTO `news` (`news_id`, `title`, `slug`, `summary`, `content`, `image`, `view_count`, `is_published`, `created_at`, `updated_at`) VALUES
+(3, '12', NULL, '12', '12', '../assets/image67fb89dfb9bf9-Group 37845.png', 0, 1, '2025-04-13 09:54:39', '2025-04-13 09:54:39'),
+(5, '2323', NULL, '2332', '2323', '../assets/image67fb8b56e0f96-image 387.png', 3, 1, '2025-04-13 10:00:54', '2025-04-18 15:39:39'),
+(6, '1231', NULL, '2323', '3112212', '../assets/image68026ea079447-Acer_Wallpaper_03_5000x2814 - Copy.jpg', 1, 1, '2025-04-18 15:24:16', '2025-04-18 15:39:32');
 
 -- --------------------------------------------------------
 
@@ -284,32 +280,28 @@ ALTER TABLE `categories`
 --
 ALTER TABLE `celebrity_news`
   ADD PRIMARY KEY (`celebrity_news_id`),
-  ADD UNIQUE KEY `slug` (`slug`),
-  ADD KEY `user_id` (`user_id`);
+  ADD UNIQUE KEY `slug` (`slug`);
 
 --
 -- Chỉ mục cho bảng `football_news`
 --
 ALTER TABLE `football_news`
   ADD PRIMARY KEY (`football_news_id`),
-  ADD UNIQUE KEY `slug` (`slug`),
-  ADD KEY `user_id` (`user_id`);
+  ADD UNIQUE KEY `slug` (`slug`);
 
 --
 -- Chỉ mục cho bảng `game_news`
 --
 ALTER TABLE `game_news`
   ADD PRIMARY KEY (`game_news_id`),
-  ADD UNIQUE KEY `slug` (`slug`),
-  ADD KEY `user_id` (`user_id`);
+  ADD UNIQUE KEY `slug` (`slug`);
 
 --
 -- Chỉ mục cho bảng `news`
 --
 ALTER TABLE `news`
   ADD PRIMARY KEY (`news_id`),
-  ADD UNIQUE KEY `slug` (`slug`),
-  ADD KEY `user_id` (`user_id`);
+  ADD UNIQUE KEY `slug` (`slug`);
 
 --
 -- Chỉ mục cho bảng `news_categories`
@@ -375,30 +367,6 @@ ALTER TABLE `users`
 --
 -- Các ràng buộc cho các bảng đã đổ
 --
-
---
--- Các ràng buộc cho bảng `celebrity_news`
---
-ALTER TABLE `celebrity_news`
-  ADD CONSTRAINT `celebrity_news_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
-
---
--- Các ràng buộc cho bảng `football_news`
---
-ALTER TABLE `football_news`
-  ADD CONSTRAINT `football_news_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
-
---
--- Các ràng buộc cho bảng `game_news`
---
-ALTER TABLE `game_news`
-  ADD CONSTRAINT `game_news_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
-
---
--- Các ràng buộc cho bảng `news`
---
-ALTER TABLE `news`
-  ADD CONSTRAINT `news_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `users` (`user_id`);
 
 --
 -- Các ràng buộc cho bảng `news_categories`

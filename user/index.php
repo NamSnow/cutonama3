@@ -14,7 +14,6 @@ $stmtLatestNews = $pdo->prepare("SELECT * FROM news WHERE is_published = 1 ORDER
 $stmtLatestNews->execute();
 $latestNewsList = $stmtLatestNews->fetchAll(PDO::FETCH_ASSOC);
 
-// Truy vấn lấy tin tức bóng đá đã được xuất bản (3 tin mới nhất)
 $stmtFootballNews = $pdo->prepare("SELECT * FROM football_news WHERE is_published = 1 ORDER BY created_at DESC LIMIT 3");
 $stmtFootballNews->execute();
 $footballNewsList = $stmtFootballNews->fetchAll(PDO::FETCH_ASSOC);
