@@ -1,7 +1,7 @@
 <?php
 session_start();
 
-// Kiểm tra xem người dùng có phải là admin không
+// Check if the user is an admin; if not, redirect to login.
 if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
     header("Location: /cutonama3/auth/login.php");
     exit();
@@ -9,7 +9,7 @@ if (!isset($_SESSION['user_id']) || $_SESSION['role'] !== 'admin') {
 
 require_once '../includes/db.php';
 
-// Log access
+// Log access for administrative monitoring.
 $ip_address = $_SERVER['REMOTE_ADDR'];
 $user_agent = $_SERVER['HTTP_USER_AGENT'];
 $page_url = $_SERVER['REQUEST_URI'];
@@ -17,39 +17,49 @@ $page_url = $_SERVER['REQUEST_URI'];
 $stmt_log = $pdo->prepare("INSERT INTO access_logs (ip_address, user_agent, page_url) VALUES (?, ?, ?)");
 $stmt_log->execute([$ip_address, $user_agent, $page_url]);
 
-// Kiểm tra và xử lý tìm kiếm và lọc
-$searchQuery = isset($_GET['search']) ? $_GET['search'] : '';
-$filterType = isset($_GET['filter']) ? $_GET['filter'] : 'all'; // Default to show all
+// Handle search and filter parameters from GET request.
+$searchQuery = isset($_GET['search']) ? trim($_GET['search']) : '';
+$filterType = isset($_GET['filter']) ? trim($_GET['filter']) : 'all'; // Default to show all news.
 
-// Số lượng tin tức hiển thị trên mỗi trang
+// Pagination settings.
 $itemsPerPage = 10;
 $page = isset($_GET['page']) ? intval($_GET['page']) : 1;
 $offset = ($page - 1) * $itemsPerPage;
 
-// Hàm để lấy tổng số tin tức dựa trên bộ lọc và tìm kiếm
+/**
+ * Calculates the total number of news articles based on filter and search queries.
+ * @param PDO $pdo The PDO database connection object.
+ * @param string $filterType The type of news to filter by ('all', 'general', 'football', etc.).
+ * @param string $searchQuery The search string for titles or summaries.
+ * @return int The total count of news articles.
+ */
 function getTotalNews($pdo, $filterType, $searchQuery) {
     $conditions = [];
     $params = [];
+
     if ($filterType !== 'all') {
         $conditions[] = "type = ?";
         $params[] = $filterType;
     }
+
     if (!empty($searchQuery)) {
         $conditions[] = "(title LIKE ? OR summary LIKE ?)";
         $params[] = '%' . $searchQuery . '%';
         $params[] = '%' . $searchQuery . '%';
     }
+
     $whereClause = !empty($conditions) ? 'WHERE ' . implode(' AND ', $conditions) : '';
 
+    // SQL query to count combined news types.
     $sql = "SELECT COUNT(*) FROM (
-                    SELECT 'general' as type, news_id as id, title, summary FROM news
-                    UNION ALL
-                    SELECT 'football' as type, football_news_id as id, title, summary FROM football_news
-                    UNION ALL
-                    SELECT 'game' as type, game_news_id as id, title, summary FROM game_news
-                    UNION ALL
-                    SELECT 'celebrity' as type, celebrity_news_id as id, title, summary FROM celebrity_news
-                ) AS combined_news {$whereClause}";
+                SELECT 'general' as type, news_id as id, title, summary FROM news
+                UNION ALL
+                SELECT 'football' as type, football_news_id as id, title, summary FROM football_news
+                UNION ALL
+                SELECT 'game' as type, game_news_id as id, title, summary FROM game_news
+                UNION ALL
+                SELECT 'celebrity' as type, celebrity_news_id as id, title, summary FROM celebrity_news
+            ) AS combined_news {$whereClause}";
 
     $stmt = $pdo->prepare($sql);
     $stmt->execute($params);
@@ -59,9 +69,9 @@ function getTotalNews($pdo, $filterType, $searchQuery) {
 $totalNews = getTotalNews($pdo, $filterType, $searchQuery);
 $totalPages = ceil($totalNews / $itemsPerPage);
 
-// Lấy danh sách tin tức từ các bảng khác nhau dựa trên bộ lọc và tìm kiếm có phân trang
 $allNews = [];
 
+// Base query for combined news, prepared to handle all filtering and pagination.
 $sql = "SELECT type, id, title, summary, is_published, created_at, image
         FROM (
             SELECT 'general' as type, news_id as id, title, summary, is_published, created_at, image FROM news
@@ -88,114 +98,167 @@ $allNews = $stmt_all->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
-<html lang="en">
+<html lang="vi">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Admin - News Management</title>
+    <title>Admin - Quản lý Tin tức</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <style>
-        .news-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 1rem;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f0f2f5; /* Lighter background */
         }
-        .news-card {
-            background-white shadow-md rounded-md overflow-hidden;
-        }
-        .news-card img {
+        /* Custom styles for news card images to ensure consistent height */
+        .news-card-image {
             width: 100%;
-            height: auto;
+            height: 180px; /* Increased height for better visual impact */
             object-fit: cover;
-            max-height: 150px;
+            border-top-left-radius: 0.5rem; /* rounded-t-lg */
+            border-top-right-radius: 0.5rem; /* rounded-t-lg */
         }
-        .news-card-content {
-            padding: 1rem;
+        .no-image-placeholder {
+            height: 180px; /* Match image height */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #e0e0e0;
+            color: #757575;
+            border-top-left-radius: 0.5rem;
+            border-top-right-radius: 0.5rem;
+            font-size: 1rem;
+            text-align: center;
         }
     </style>
 </head>
 <body class="bg-gray-100 min-h-screen">
     <?php include_once '../navbar/header_admin.php' ?>
-    <div class="container mx-auto py-8 px-4">
-        <h1 class="text-3xl font-semibold text-gray-800 mb-6">Admin Panel - News Management</h1>
 
-        <div class="flex justify-between items-center mb-4">
-            <a href="/cutonama3/admin/logout.php" class="bg-red-500 hover:bg-red-700 text-white font-bold py-2 px-4 rounded">Logout</a>
+    <div class="container mx-auto py-8 px-4 sm:px-6 lg:px-8">
+        <h1 class="text-4xl font-extrabold text-gray-900 mb-8 text-center">Quản lý Tin tức</h1>
+
+        <div class="bg-white shadow-lg rounded-lg p-6 mb-8">
+            <div class="flex flex-col sm:flex-row justify-between items-center mb-6 gap-4">
+                <a href="/cutonama3/admin/logout.php" class="inline-flex items-center px-4 py-2 bg-red-600 hover:bg-red-700 text-white font-semibold rounded-lg shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-red-500 focus:ring-opacity-75">
+                    <svg class="w-5 h-5 mr-2" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M3 3a1 1 0 011-1h12a1 1 0 011 1v3a1 1 0 01-2 0V4H5v12h7a1 1 0 010 2H4a1 1 0 01-1-1V3zm10 0a1 1 0 01.707.293l3 3a1 1 0 010 1.414l-3 3a1 1 0 01-1.414-1.414L14.586 8H9a1 1 0 010-2h5.586L12.293 3.707A1 1 0 0113 3z" clip-rule="evenodd"></path></svg>
+                    Đăng xuất
+                </a>
+                
+                <form action="" method="GET" class="w-full sm:w-auto flex flex-grow items-center">
+                    <input 
+                        type="text" 
+                        name="search" 
+                        value="<?php echo htmlspecialchars($searchQuery); ?>" 
+                        placeholder="Tìm kiếm theo tiêu đề hoặc tóm tắt..." 
+                        class="flex-grow shadow-sm appearance-none border border-gray-300 rounded-l-lg py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200" 
+                    />
+                    <button 
+                        type="submit" 
+                        class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-r-lg shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75"
+                    >
+                        Tìm kiếm
+                    </button>
+                </form>
+            </div>
+
+            <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
+                <div class="flex flex-wrap gap-2 justify-center md:justify-start">
+                    <span class="font-semibold text-gray-700 hidden sm:block">Tạo tin tức mới:</span>
+                    <a href="/cutonama3/admin/create.php" class="flex-shrink-0 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-75">
+                        <svg class="w-4 h-4 inline-block mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
+                        Trang chính
+                    </a>
+                    <a href="/cutonama3/admin/create_football.php" class="flex-shrink-0 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-75">
+                        <svg class="w-4 h-4 inline-block mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
+                        Bóng đá
+                    </a>
+                    <a href="/cutonama3/admin/create_game.php" class="flex-shrink-0 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-75">
+                        <svg class="w-4 h-4 inline-block mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
+                        Game
+                    </a>
+                    <a href="/cutonama3/admin/create_celebrity.php" class="flex-shrink-0 px-4 py-2 bg-green-600 hover:bg-green-700 text-white font-semibold rounded-lg shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-green-500 focus:ring-opacity-75">
+                        <svg class="w-4 h-4 inline-block mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M10 5a1 1 0 011 1v3h3a1 1 0 110 2h-3v3a1 1 0 11-2 0v-3H6a1 1 0 110-2h3V6a1 1 0 011-1z" clip-rule="evenodd"></path></svg>
+                        Người nổi tiếng
+                    </a>
+                </div>
+                
+                <form action="" method="GET" class="w-full md:w-auto flex items-center justify-end">
+                    <span class="mr-2 text-gray-700 font-semibold hidden sm:block">Lọc theo loại:</span>
+                    <input type="hidden" name="search" value="<?php echo htmlspecialchars($searchQuery); ?>">
+                    <select name="filter" onchange="this.form.submit()" class="shadow-sm appearance-none border border-gray-300 rounded-lg py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200">
+                        <option value="all" <?php if ($filterType === 'all') echo 'selected'; ?>>Tất cả Tin tức</option>
+                        <option value="general" <?php if ($filterType === 'general') echo 'selected'; ?>>Tin tức chung</option>
+                        <option value="football" <?php if ($filterType === 'football') echo 'selected'; ?>>Tin tức bóng đá</option>
+                        <option value="game" <?php if ($filterType === 'game') echo 'selected'; ?>>Tin tức Game</option>
+                        <option value="celebrity" <?php if ($filterType === 'celebrity') echo 'selected'; ?>>Tin tức người nổi tiếng</option>
+                    </select>
+                </form>
+            </div>
         </div>
 
-        <form action="" method="GET" class="mb-4 flex items-center">
-            <input type="text" name="search" value="<?php echo htmlspecialchars($searchQuery); ?>" placeholder="Search all news..." class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" />
-            <button type="submit" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded ml-2 focus:outline-none focus:shadow-outline">Search</button>
-        </form>
-
-        <div class="mb-4 flex flex-wrap gap-2 items-center justify-between">
-            <div>
-                <a href="/cutonama3/admin/create.php" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Add General</a>
-                <a href="/cutonama3/admin/create_football.php" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Add Football</a>
-                <a href="/cutonama3/admin/create_game.php" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Add Game</a>
-                <a href="/cutonama3/admin/create_celebrity.php" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline">Add Celebrity</a>
-            </div>
-            <div>
-                <select name="filter" class="shadow appearance-none border rounded py-2 px-3 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" aria-label="Filter news" onchange="this.form.submit()">
-                    <option value="all" <?php if ($filterType === 'all') echo 'selected'; ?>>All News</option>
-                    <option value="general" <?php if ($filterType === 'general') echo 'selected'; ?>>General News</option>
-                    <option value="football" <?php if ($filterType === 'football') echo 'selected'; ?>>Football News</option>
-                    <option value="game" <?php if ($filterType === 'game') echo 'selected'; ?>>Game News</option>
-                    <option value="celebrity" <?php if ($filterType === 'celebrity') echo 'selected'; ?>>Celebrity News</option>
-                </select>
-            </div>
-        </div>
-
-        <h2 class="text-xl font-semibold text-gray-700 mb-2">News List</h2>
+        <h2 class="text-2xl font-bold text-gray-800 mb-4 border-b-2 border-gray-200 pb-2">Danh sách Tin tức</h2>
         <?php if (empty($allNews)): ?>
-            <p class="text-gray-500">No news found.</p>
+            <div class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 rounded" role="alert">
+                <p class="font-bold">Không tìm thấy tin tức nào!</p>
+                <p>Vui lòng thử điều chỉnh bộ lọc hoặc tìm kiếm.</p>
+            </div>
         <?php else: ?>
-            <div class="news-grid">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                 <?php foreach ($allNews as $news): ?>
-                    <div class="news-card">
-                        <?php if ($news['image']): ?>
-                            <img src="<?php echo htmlspecialchars($news['image']); ?>" alt="<?php echo htmlspecialchars($news['title']); ?>">
+                    <div class="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-xl">
+                        <?php if (!empty($news['image'])): ?>
+                            <img src="/cutonama3/assets/image/<?php echo htmlspecialchars($news['image']); ?>" alt="<?php echo htmlspecialchars($news['title']); ?>" class="news-card-image">
                         <?php else: ?>
-                            <div class="bg-gray-200 h-32 flex items-center justify-center text-gray-500">No Image</div>
+                            <div class="no-image-placeholder">Không có hình ảnh</div>
                         <?php endif; ?>
-                        <div class="news-card-content">
-                            <h3 class="font-semibold text-gray-800 mb-1"><?php echo htmlspecialchars($news['title']); ?></h3>
-                            <p class="text-gray-600 text-sm mb-2"><?php echo htmlspecialchars(substr($news['summary'], 0, 80)) . '...'; ?></p>
-                            <div class="flex items-center justify-between text-xs text-gray-500">
-                                <span>Type: <span class="font-medium"><?php echo ucfirst($news['type']); ?></span></span>
-                                <span>Published: <?php echo $news['is_published'] ? '<span class="text-green-600 font-medium">Yes</span>' : '<span class="text-red-600 font-medium">No</span>'; ?></span>
-                                <span>Date: <?php echo date('Y-m-d', strtotime($news['created_at'])); ?></span>
+                        <div class="p-4">
+                            <h3 class="font-bold text-lg text-gray-800 mb-2 truncate"><?php echo htmlspecialchars($news['title']); ?></h3>
+                            <p class="text-gray-600 text-sm mb-3 line-clamp-3"><?php echo htmlspecialchars($news['summary']); ?></p>
+                            
+                            <div class="text-xs text-gray-500 mb-3 space-y-1">
+                                <p><strong>Loại:</strong> <span class="font-semibold text-gray-700"><?php echo ucfirst($news['type']); ?></span></p>
+                                <p><strong>Đăng:</strong> 
+                                    <?php if ($news['is_published']): ?>
+                                        <span class="text-green-600 font-semibold">Có</span>
+                                    <?php else: ?>
+                                        <span class="text-red-600 font-semibold">Không</span>
+                                    <?php endif; ?>
+                                </p>
+                                <p><strong>Ngày:</strong> <?php echo date('d/m/Y', strtotime($news['created_at'])); ?></p>
                             </div>
-                            <div class="mt-2">
+                            
+                            <div class="mt-4 flex flex-wrap gap-2">
                                 <?php
+                                // Determine the correct edit and delete URLs based on news type.
                                 $editUrl = '';
                                 $deleteUrl = '';
-                                $idKey = '';
                                 switch ($news['type']) {
                                     case 'general':
                                         $editUrl = '/cutonama3/admin/edit.php?id=';
                                         $deleteUrl = '/cutonama3/admin/delete.php?id=';
-                                        $idKey = 'news_id';
                                         break;
                                     case 'football':
                                         $editUrl = '/cutonama3/admin/edit_football.php?id=';
                                         $deleteUrl = '/cutonama3/admin/delete_football.php?id=';
-                                        $idKey = 'id';
                                         break;
                                     case 'game':
                                         $editUrl = '/cutonama3/admin/edit_game.php?id=';
                                         $deleteUrl = '/cutonama3/admin/delete_game.php?id=';
-                                        $idKey = 'id';
                                         break;
                                     case 'celebrity':
                                         $editUrl = '/cutonama3/admin/edit_celebrity.php?id=';
                                         $deleteUrl = '/cutonama3/admin/delete_celebrity.php?id=';
-                                        $idKey = 'id';
                                         break;
                                 }
                                 ?>
-                                <a href="<?php echo $editUrl . $news[$idKey]; ?>" class="inline-block bg-blue-500 hover:bg-blue-700 text-white font-bold py-1 px-2 rounded text-xs mr-1">Edit</a>
-                                <a href="<?php echo $deleteUrl . $news[$idKey]; ?>" class="inline-block bg-red-500 hover:bg-red-700 text-white font-bold py-1 px-2 rounded text-xs" onclick="return confirm('Are you sure you want to delete this news?')">Delete</a>
+                                <a href="<?php echo $editUrl . $news['id']; ?>" class="inline-flex items-center px-3 py-1 bg-blue-500 hover:bg-blue-600 text-white text-sm font-medium rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-blue-400 focus:ring-opacity-75">
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path d="M13.586 3.586a2 2 0 112.828 2.828l-7.793 7.793-2.586-.586.586-2.586L13.586 3.586zM15 6L13 4 5 12l-.5.5L4 14l1.5-1.5.5-.5L15 6z"></path><path fill-rule="evenodd" d="M10 2a1 1 0 00-1 1v1h2V3a1 1 0 00-1-1z" clip-rule="evenodd"></path></svg>
+                                    Sửa
+                                </a>
+                                <a href="<?php echo $deleteUrl . $news['id']; ?>" class="inline-flex items-center px-3 py-1 bg-red-500 hover:bg-red-600 text-white text-sm font-medium rounded-md transition duration-200 focus:outline-none focus:ring-2 focus:ring-red-400 focus:ring-opacity-75" onclick="return confirm('Bạn có chắc chắn muốn xóa tin tức này không?');">
+                                    <svg class="w-4 h-4 mr-1" fill="currentColor" viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg"><path fill-rule="evenodd" d="M9 2a1 1 0 00-.894.553L7.382 4H4a1 1 0 000 2v10a2 2 0 002 2h8a2 2 0 002-2V6a1 1 0 100-2h-3.382l-.724-1.447A1 1 0 0011 2H9zm-1 9a1 1 0 100 2h2a1 1 0 100-2H8z" clip-rule="evenodd"></path></svg>
+                                    Xóa
+                                </a>
                             </div>
                         </div>
                     </div>
@@ -203,10 +266,12 @@ $allNews = $stmt_all->fetchAll(PDO::FETCH_ASSOC);
             </div>
 
             <?php if ($totalPages > 1): ?>
-                <div class="mt-6 flex justify-center">
+                <div class="mt-8 flex justify-center space-x-2">
                     <?php for ($i = 1; $i <= $totalPages; $i++): ?>
-                        <a href="?page=<?php echo $i; ?><?php if (!empty($searchQuery)) echo '&search=' . htmlspecialchars($searchQuery); ?><?php if ($filterType !== 'all') echo '&filter=' . $filterType; ?>"
-                           class="px-3 py-2 <?php echo $page == $i ? 'bg-blue-500 text-white' : 'bg-white text-gray-700 hover:bg-gray-200'; ?> border rounded mr-1">
+                        <a href="?page=<?php echo $i; ?><?php if (!empty($searchQuery)) echo '&search=' . urlencode($searchQuery); ?><?php if ($filterType !== 'all') echo '&filter=' . urlencode($filterType); ?>"
+                           class="px-4 py-2 rounded-lg font-semibold transition duration-300
+                           <?php echo $page == $i ? 'bg-blue-600 text-white shadow-md' : 'bg-gray-200 text-gray-700 hover:bg-gray-300'; ?>
+                           focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75">
                             <?php echo $i; ?>
                         </a>
                     <?php endfor; ?>
