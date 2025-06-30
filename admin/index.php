@@ -207,7 +207,7 @@ $allNews = $stmt_all->fetchAll(PDO::FETCH_ASSOC);
                 <?php foreach ($allNews as $news): ?>
                     <div class="bg-white rounded-lg shadow-lg overflow-hidden transform transition duration-300 hover:scale-105 hover:shadow-xl">
                         <?php if (!empty($news['image'])): ?>
-                            <img src="/cutonama3/assets/image/<?php echo htmlspecialchars($news['image']); ?>" alt="<?php echo htmlspecialchars($news['title']); ?>" class="news-card-image">
+                            <img src="<?php echo htmlspecialchars($news['image']); ?>" alt="<?php echo htmlspecialchars($news['title']); ?>" class="news-card-image">
                         <?php else: ?>
                             <div class="no-image-placeholder">Không có hình ảnh</div>
                         <?php endif; ?>
