@@ -18,6 +18,7 @@ $stmt_log = $pdo->prepare("INSERT INTO access_logs (ip_address, user_agent, page
 $stmt_log->execute([$ip_address, $user_agent, $page_url]);
 
 // Handle search and filter parameters from GET request.
+// These variables must be defined before including header_admin.php
 $searchQuery = isset($_GET['search']) ? trim($_GET['search']) : '';
 $filterType = isset($_GET['filter']) ? trim($_GET['filter']) : 'all'; // Default to show all news.
 
@@ -144,22 +145,7 @@ $allNews = $stmt_all->fetchAll(PDO::FETCH_ASSOC);
                     Đăng xuất
                 </a>
                 
-                <form action="" method="GET" class="w-full sm:w-auto flex flex-grow items-center">
-                    <input 
-                        type="text" 
-                        name="search" 
-                        value="<?php echo htmlspecialchars($searchQuery); ?>" 
-                        placeholder="Tìm kiếm theo tiêu đề hoặc tóm tắt..." 
-                        class="flex-grow shadow-sm appearance-none border border-gray-300 rounded-l-lg py-2 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-200" 
-                    />
-                    <button 
-                        type="submit" 
-                        class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-r-lg shadow-md transition duration-300 ease-in-out focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-opacity-75"
-                    >
-                        Tìm kiếm
-                    </button>
-                </form>
-            </div>
+                </div>
 
             <div class="flex flex-col md:flex-row justify-between items-center mb-6 gap-4">
                 <div class="flex flex-wrap gap-2 justify-center md:justify-start">

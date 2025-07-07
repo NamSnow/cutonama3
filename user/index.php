@@ -1,29 +1,79 @@
 <?php
 session_start();
 
-// Kiểm tra xem người dùng đã đăng nhập chưa
+// Check if the user is logged in
 if (!isset($_SESSION['user_id'])) {
-    header("Location: /cutonama3/auth/login.php"); // Điều chỉnh đường dẫn nếu cần
+    header("Location: /cutonama3/auth/login.php"); // Adjust path if needed
     exit();
 }
 
 require_once '../includes/db.php';
 
-// Truy vấn lấy các tin tức đã được xuất bản (6 tin mới nhất)
-$stmtLatestNews = $pdo->prepare("SELECT * FROM news WHERE is_published = 1 ORDER BY created_at DESC LIMIT 6");
+// Initialize search query variable
+$search_query = '';
+// Check if a search query was submitted
+if (isset($_GET['search_query']) && !empty($_GET['search_query'])) {
+    $search_query = '%' . $_GET['search_query'] . '%'; // Add wildcards for LIKE search
+}
+
+// Base SQL query for latest news
+$sqlLatestNews = "SELECT * FROM news WHERE is_published = 1";
+if (!empty($search_query)) {
+    $sqlLatestNews .= " AND (title LIKE :search_query OR summary LIKE :search_query OR content LIKE :search_query)";
+}
+$sqlLatestNews .= " ORDER BY created_at DESC LIMIT 6";
+
+$stmtLatestNews = $pdo->prepare($sqlLatestNews);
+if (!empty($search_query)) {
+    $stmtLatestNews->bindValue(':search_query', $search_query);
+}
 $stmtLatestNews->execute();
 $latestNewsList = $stmtLatestNews->fetchAll(PDO::FETCH_ASSOC);
 
-$stmtFootballNews = $pdo->prepare("SELECT * FROM football_news WHERE is_published = 1 ORDER BY created_at DESC LIMIT 3");
+// Base SQL query for football news
+$sqlFootballNews = "SELECT * FROM football_news WHERE is_published = 1";
+if (!empty($search_query)) {
+    $sqlFootballNews .= " AND (title LIKE :search_query OR summary LIKE :search_query OR content LIKE :search_query)";
+}
+$sqlFootballNews .= " ORDER BY created_at DESC LIMIT 3";
+
+$stmtFootballNews = $pdo->prepare($sqlFootballNews);
+if (!empty($search_query)) {
+    $stmtFootballNews->bindValue(':search_query', $search_query);
+}
 $stmtFootballNews->execute();
 $footballNewsList = $stmtFootballNews->fetchAll(PDO::FETCH_ASSOC);
 
-// Truy vấn lấy tin tức người nổi tiếng đã được xuất bản (3 tin mới nhất)
-$stmtCelebrityNews = $pdo->prepare("SELECT * FROM celebrity_news WHERE is_published = 1 ORDER BY created_at DESC LIMIT 3");
+// Base SQL query for celebrity news
+$sqlCelebrityNews = "SELECT * FROM celebrity_news WHERE is_published = 1";
+if (!empty($search_query)) {
+    $sqlCelebrityNews .= " AND (title LIKE :search_query OR summary LIKE :search_query OR content LIKE :search_query)";
+}
+$sqlCelebrityNews .= " ORDER BY created_at DESC LIMIT 3";
+
+$stmtCelebrityNews = $pdo->prepare($sqlCelebrityNews);
+if (!empty($search_query)) {
+    $stmtCelebrityNews->bindValue(':search_query', $search_query);
+}
 $stmtCelebrityNews->execute();
 $celebrityNewsList = $stmtCelebrityNews->fetchAll(PDO::FETCH_ASSOC);
 
-// Lấy thông tin người dùng từ session
+// Base SQL query for game news
+$sqlGameNews = "SELECT * FROM game_news WHERE is_published = 1";
+if (!empty($search_query)) {
+    $sqlGameNews .= " AND (title LIKE :search_query OR summary LIKE :search_query OR content LIKE :search_query OR game_title LIKE :search_query OR platform LIKE :search_query)";
+}
+$sqlGameNews .= " ORDER BY created_at DESC LIMIT 3";
+
+$stmtGameNews = $pdo->prepare($sqlGameNews);
+if (!empty($search_query)) {
+    $stmtGameNews->bindValue(':search_query', $search_query);
+}
+$stmtGameNews->execute();
+$gameNewsList = $stmtGameNews->fetchAll(PDO::FETCH_ASSOC);
+
+
+// Get user information from session
 $user_id = $_SESSION['user_id'];
 $username = $_SESSION['username'];
 ?>
@@ -36,7 +86,7 @@ $username = $_SESSION['username'];
     <title>Trang Quảng Cáo Tin Tức</title>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
     <style>
-        /* Các kiểu dáng tùy chỉnh của bạn (giữ nguyên) */
+        /* Your existing styles */
         body {
             font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
             background-color: #f8f9fa;
@@ -181,6 +231,14 @@ $username = $_SESSION['username'];
             display: flex;
             justify-content: flex-end;
         }
+        /* Add some basic styling for the search form */
+        .search-form {
+            display: flex;
+            align-items: center;
+        }
+        .search-form .form-control {
+            margin-right: 0.5rem;
+        }
     </style>
 </head>
 <body>
@@ -199,16 +257,13 @@ $username = $_SESSION['username'];
                             <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
                                 <ul class="navbar-nav">
                                     <li class="nav-item">
-                                        <a class="nav-link active" href="#">Trang chủ</a>
+                                        <a class="nav-link active" href="index.php">Trang chủ</a>
                                     </li>
                                     <li class="nav-item">
-                                        <a class="nav-link" href="#">Tin Nóng</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="#">Thế Giới</a>
-                                    </li>
-                                    <li class="nav-item">
-                                        <a class="nav-link" href="#">Kinh Tế</a>
+                                        <form class="d-flex search-form" action="index.php" method="GET">
+                                            <input class="form-control me-2" type="search" placeholder="Tìm kiếm tin tức..." aria-label="Search" name="search_query" value="<?php echo isset($_GET['search_query']) ? htmlspecialchars($_GET['search_query']) : ''; ?>">
+                                            <button class="btn btn-outline-success" type="submit">Tìm</button>
+                                        </form>
                                     </li>
                                     <?php if (isset($_SESSION['user_id'])): ?>
                                         <li class="nav-item">
@@ -239,7 +294,7 @@ $username = $_SESSION['username'];
             <div class="row">
                 <div class="col-md-8">
                     <div class="card bg-dark text-white rounded-0">
-                        <img src="https://via.placeholder.com/800x400" class="card-img" alt="Tin nổi bật" style="object-fit: cover; height: 400px;">
+                        <img src="https://gcs.tripi.vn/public-tripi/tripi-feed/img/482599XAF/anh-mo-ta.png" class="card-img" alt="Tin nổi bật" style="object-fit: cover; height: 400px;">
                         <div class="card-img-overlay d-flex flex-column justify-content-end">
                             <h5 class="card-title fw-bold">Tiêu đề tin nổi bật số 1</h5>
                             <p class="card-text">Mô tả ngắn gọn về tin tức nổi bật này...</p>
@@ -249,14 +304,14 @@ $username = $_SESSION['username'];
                 </div>
                 <div class="col-md-4">
                     <div class="card rounded-0 mb-2">
-                        <img src="https://via.placeholder.com/400x200" class="card-img-top" alt="Tin nổi bật nhỏ 1">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQZKhlwd1pW2djeJeGe7Z_7apZxBXfxTjEIJg&s" alt="">
                         <div class="card-body">
                             <h6 class="card-title fw-bold">Tiêu đề tin nhỏ 1</h6>
                             <p class="card-text">Mô tả ngắn gọn...</p>
                         </div>
                     </div>
                     <div class="card rounded-0 mb-2">
-                        <img src="https://via.placeholder.com/400x200" class="card-img-top" alt="Tin nổi bật nhỏ 2">
+                        <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWqofI0IZ3KQqVHLYzFwK-eRKkYzye1MGPjw&s" class="card-img-top" alt="Tin nổi bật nhỏ 2">
                         <div class="card-body">
                             <h6 class="card-title fw-bold">Tiêu đề tin nhỏ 2</h6>
                             <p class="card-text">Mô tả ngắn gọn...</p>
@@ -267,27 +322,35 @@ $username = $_SESSION['username'];
         </section>
 
         <section class="news-list">
-            <h2>Tin tức mới nhất</h2>
+            <?php if (!empty($_GET['search_query'])): ?>
+                <h2>Kết quả tìm kiếm cho "<?php echo htmlspecialchars($_GET['search_query']); ?>"</h2>
+            <?php else: ?>
+                <h2>Tin tức mới nhất</h2>
+            <?php endif; ?>
             <div class="row">
-                <?php foreach ($latestNewsList as $news): ?>
-                    <div class="col-md-4 mb-3">
-                        <div class="card">
-                            <?php if (!empty($news['image'])): ?>
-                                <img src="<?php echo htmlspecialchars($news['image']); ?>" class="card-img-top" alt="<?php echo htmlspecialchars($news['title']); ?>" style="object-fit: cover; height: 200px;">
-                            <?php else: ?>
-                                <img src="https://via.placeholder.com/400x200" class="card-img-top" alt="No Image" style="object-fit: cover; height: 200px;">
-                            <?php endif; ?>
-                            <div class="card-body">
-                                <h5 class="card-title"><?php echo htmlspecialchars($news['title']); ?></h5>
-                                <p class="card-text"><?php echo htmlspecialchars($news['summary']); ?></p>
-                            </div>
-                            <div class="card-footer text-end">
-                                <small class="text-muted"><?php echo date('d/m/Y', strtotime($news['created_at'])); ?></small>
-                                <a href="news_detail.php?id=<?php echo $news['news_id']; ?>" class="btn btn-outline-primary btn-sm float-end">Xem chi tiết</a>
+                <?php if (!empty($latestNewsList)): ?>
+                    <?php foreach ($latestNewsList as $news): ?>
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <?php if (!empty($news['image'])): ?>
+                                    <img src="<?php echo htmlspecialchars($news['image']); ?>" class="card-img-top" alt="<?php echo htmlspecialchars($news['title']); ?>" style="object-fit: cover; height: 200px;">
+                                <?php else: ?>
+                                    <img src="https://via.placeholder.com/400x200" class="card-img-top" alt="No Image" style="object-fit: cover; height: 200px;">
+                                <?php endif; ?>
+                                <div class="card-body">
+                                    <h5 class="card-title"><?php echo htmlspecialchars($news['title']); ?></h5>
+                                    <p class="card-text"><?php echo htmlspecialchars($news['summary']); ?></p>
+                                </div>
+                                <div class="card-footer text-end">
+                                    <small class="text-muted"><?php echo date('d/m/Y', strtotime($news['created_at'])); ?></small>
+                                    <a href="news_detail.php?id=<?php echo $news['news_id']; ?>" class="btn btn-outline-primary btn-sm float-end">Xem chi tiết</a>
+                                </div>
                             </div>
                         </div>
-                    </div>
-                <?php endforeach; ?>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="col-md-12">Không tìm thấy tin tức nào.</div>
+                <?php endif; ?>
             </div>
         </section>
 
@@ -345,6 +408,37 @@ $username = $_SESSION['username'];
                     <?php endforeach; ?>
                 <?php else: ?>
                     <div class="col-md-12">Không có tin tức về người nổi tiếng.</div>
+                <?php endif; ?>
+            </div>
+        </section>
+
+
+        <section class="ads">
+            <h2>Tin tức Game</h2>
+            <div class="row">
+                <?php if (!empty($gameNewsList)): ?>
+                    <?php foreach ($gameNewsList as $gameNews): ?>
+                        <div class="col-md-4 mb-3">
+                            <div class="card">
+                                <?php if (!empty($gameNews['image'])): ?>
+                                    <img src="<?php echo htmlspecialchars($gameNews['image']); ?>" class="card-img-top" alt="<?php echo htmlspecialchars($gameNews['title']); ?>" style="object-fit: cover; height: 200px;">
+                                <?php else: ?>
+                                    <img src="https://via.placeholder.com/400x200" class="card-img-top" alt="No Image" style="object-fit: cover; height: 200px;">
+                                <?php endif; ?>
+                                <div class="card-body">
+                                    <h5 class="card-title"><?php echo htmlspecialchars($gameNews['title']); ?></h5>
+                                    <p class="card-text"><?php echo htmlspecialchars($gameNews['summary']); ?></p>
+                                    <p class="card-text"><small class="text-muted">Game: <?php echo htmlspecialchars($gameNews['game_title']); ?> - Nền tảng: <?php echo htmlspecialchars($gameNews['platform']); ?></small></p>
+                                </div>
+                                <div class="card-footer text-end">
+                                    <small class="text-muted"><?php echo date('d/m/Y', strtotime($gameNews['created_at'])); ?></small>
+                                    <a href="game_news_detail.php?id=<?php echo $gameNews['game_news_id']; ?>" class="btn btn-outline-primary btn-sm float-end">Xem chi tiết</a>
+                                </div>
+                            </div>
+                        </div>
+                    <?php endforeach; ?>
+                <?php else: ?>
+                    <div class="col-md-12">Không có tin tức game nào.</div>
                 <?php endif; ?>
             </div>
         </section>
